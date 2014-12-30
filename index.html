@@ -5,74 +5,7 @@
 <head>
 <link href="../favicon.ico" rel="shortcut icon"/>
 <title>Wikifier - Convert Confluence XML to wiki markup</title>
-<style type="text/css">
-/* <![CDATA[ */
-*
-{
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-}
-html, body
-{
-  height: 100%;
-  width: 100%;
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  font-size: 1em;
-  line-height: 1em;
-}
-form,
-form > fieldset,
-form > fieldset > textarea
-{
-  position: relative;
-  display: block;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-form > fieldset > textarea
-{
-  white-space: pre-wrap;
-}
-textarea.error
-{
-  background-color: #FFC0C0;
-}
-textarea
-{
-  overflow: auto;
-  resize: none;
-}
-button
-{
-  margin-top: -0.3em; /* Kludge to vertically center button */
-  margin-left: 0.5em;
-}
-a, a:hover, a:active, a:focus
-{
-  outline: 0;
-  text-decoration: none;
-}
-a:hover, a:focus
-{
-  color: #000000;
-}
-a
-{
-  float: right;
-  color: #606060;
-  font-weight: normal;
-  font-size: 0.8em;
-  display: block-inline;
-  margin-left: 2em;
-}
-/* ]]> */
-</style>
+
 <script type="text/javascript">
 // <![CDATA[
 if (window.ActiveXObject) {
@@ -198,16 +131,21 @@ document.getElementById("wikimarkup").value = strWikiMarkup;
 </head>
 <body onload="initialize()">
 
-<!-- Confluence XML -->
-<form style="position: absolute; padding-top: 2em; top: 0; left: 0; height: 100%; width: 50%;" action=""><fieldset><textarea style="padding-left: 0.5em;" id="confluencexml" rows="1" cols="1" onkeyup="keyup(event)">&lt;h1&gt;Wikifier&lt;/h1&gt;
+<p>WORK IN PROGRESS</p>
+
+<p>Based on the original <a href="http://www.amnet.net.au/~ghannington/confluence/wikifier/">Wikifier</a>.</p>
+
+<hr/>
+
+<textarea id="confluencexml" rows="25" cols="120" onkeyup="keyup(event)">&lt;h1&gt;Wikifier&lt;/h1&gt;
 &lt;p&gt;Paste your Confluence XML under the "Confluence XML" heading.&lt;/p&gt;
 &lt;p&gt;You can edit the XML, and then press Enter to refresh the wikified view.&lt;/p&gt;
-</textarea></fieldset></form>
-<div style="position: absolute; width: 50%; height: 2em; top: 0; left: 0; padding: 0.5em; background-color: #D0D0D0; font-weight: bold;"><a href="#" title="Convert to wiki markup" onclick="wikify(); return false;" accesskey="w">Wikify</a>Confluence XML</div>
+</textarea>
 
-<!-- Wiki markup -->
-<form style="position: absolute; padding-top: 2em; top: 0; left: 50%; height: 100%; width: 50%;" action=""><fieldset><textarea style="padding-left: 0.5em; border-left: 1px solid #E0E0E0;" id="wikimarkup" rows="1" cols="1"></textarea></fieldset></form>
-<div style="position: absolute; top: 0; left: 50%; width: 50%; height: 2em; padding: 0.5em; background-color: #E0E0E0; font-weight: bold;"><a href="../readme.html#wikifier" title="Documentation and support details">Help</a>Wiki markup</div>
+<hr/>
+
+<textarea id="wikimarkup" rows="25" cols="120">
+</textarea>
 
 </body>
 </html>

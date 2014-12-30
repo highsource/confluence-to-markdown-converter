@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+
+
+<h1>Features</h1>
+
+
+<ul>
+	
+<li>Runs in almost <strong>any</strong> modern <strong>browser</strong></li>
+	
+<li>Runs in <a href="http://nodejs.org/">node.js</a></li>
+	
+<li>Implements <strong>marshalling</strong> (serializing a JavaScript object info XML)
+	
+<ul>
+		
+<li>Supports <strong>string</strong> data and <strong>DOM</strong> nodes as result</li>
+	</ul>
+	</li>
+	
+<li>Implements <strong>unmarshalling</strong> (parsing a JavaScript object from XML)
+	
+<ul>
+		
+<li>Supports <strong>string</strong> data, <strong>DOM</strong> nodes, <strong>URLs</strong> or <strong>files</strong> (with node.js) as source</li>
+	</ul>
+	</li>
+	
+<li>Driven by <strong>declarative</strong> XML/object <strong>mappings</strong> which control how JavaScript object is converted into XML or vice versa</li>
+	
+<li><strong>Mappings</strong> can be <strong>automatically generated</strong> based on an <strong>XML Schema</strong></li>
+	
+<li><strong>Strongly-structured</strong>
+	
+<ul>
+		
+<li>XML/object mappings describe structures of JavaScript objects</li>
+	</ul>
+	</li>
+	
+<li><strong>Strongly-typed</strong>
+	
+<ul>
+		
+<li>Conversion between string content on XML side and values on the JavaScript side is controlled by declared property types.</li>
+	</ul>
+	</li>
+	
+<li>Provides <strong>extensible type system</strong>
+	
+<ul>
+		
+<li>Supports most XML Schema simple types</li>
+		
+<li>Supports enumerations, list and union simple types</li>
+		
+<li>Allows adding own simple types</li>
+		
+<li>Supports complex types consisting of several properties</li>
+		
+<li>Supports deriving complex types by extensions</li>
+	</ul>
+	</li>
+	
+<li>Provides <strong>advanced property system</strong>
+	
+<ul>
+		
+<li>Value, attribute, element, element reference properties for string processing of XML content</li>
+		
+<li>Any attribute, any element properties for &quot;lax&quot; processing for XML content</li>
+	</ul>
+	</li>
+</ul>
+
+</ac:confluence>

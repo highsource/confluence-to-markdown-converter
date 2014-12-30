@@ -1,0 +1,1 @@
+java -jar ../lib/saxon9he.jar -s:%1 -xsl:../xslt/c2md.xsl -o:%1.md

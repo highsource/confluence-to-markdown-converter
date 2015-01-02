@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h2>Modules</h2>
+
+
+<p>Jsonix module is essentially just a simple JavaScript object which declares a set of XML/object mappings.</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+// Module declaration syntax
+var MyModule = {
+    // Name of the module, required
+    name: 'MyModule',
+    // Array of types declared by the module, optional 
+    typeInfos: [ /*...*/ ],
+    // Array of element mappings declared by the module, optional
+    elementInfos: [ /*...*/ ],
+    // Default namespace URI for elements, optional
+    defaultElementNamespaceURI: 'http://www.mymodule.org/elements',
+    // Default namespace URI for attributes, optional
+    defaultElementNamespaceURI: 'http://www.mymodule.org/attributes'
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+<p><a href="http://jsfiddle.net/lexi/zFZW6/">Fiddle</a>.</p>
+
+
+<h3>Name</h3>
+
+
+<p>Each module must have a string <code>name</code> property which names a module. The name is useful for locally-named declarations. For instance, in the code below the full name of the <code>PurchaseOrderType</code> type info will be <code>PO.PurchaseOrderType</code>.</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var PO = {
+  name: 'PO',
+  typeInfos: [
+    // Full name of the class info ist PO.PurchaseOrderType
+    {
+      type: 'classInfo',
+      localName: 'PurchaseOrderType',
+      // ...
+    }, // ...
+  ], // ...
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+<p><a href="http://jsfiddle.net/lexi/F79g5/">Fiddle</a>.</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>For backwards-compatibility, <code>name</code> property the module is technically not required (you'll get no error if you pass a module without a name). However it is highly recommended to declare this property. We may implement in strict check for name in future versions.</p></ac:rich-text-body></ac:structured-macro>
+
+
+<h3>Type infos</h3>
+
+
+<p>Each module may declare zero or more <ac:link ac:anchor="Types"><ac:link-body>types</ac:link-body></ac:link> using the <code>typeInfos</code> property.<br />
+Types are roughly equivalent to the global simple and complex types of the XML Schema.</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var PO = {
+    name: 'PO',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'PurchaseOrderType',
+        // ...
+    }, {
+        type: 'classInfo',
+        localName: 'Items',
+        // ...
+    }, {
+        type: 'classInfo',
+        localName: 'USAddress',
+        // ...
+    }, {
+        type: 'classInfo',
+        localName: 'Item',
+        // ...
+    }],
+    elementInfos: [ /* ... */ ]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+<p><a href="http://jsfiddle.net/lexi/nZmRf/">Fiddle</a>.</p>
+
+
+<p>If type info is declared with a local name, it will get a &quot;full&quot; name based on the pattern <code>&lt;ModuleName&gt;.&lt;LocalName&gt;</code>, ex. <code>PO.PurchaseOrderType</code>.<br />
+See the <ac:link ac:anchor="Types"><ac:link-body>types</ac:link-body></ac:link> section for more information.</p>
+
+
+<h3>Element infos</h3>
+
+
+<p>Each module may declare zero or more <ac:link ac:anchor="Element declarations"><ac:link-body>element declarations</ac:link-body></ac:link>.<br />
+Element declarations are roughly equivalent to global elements of the XML Schema.</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var PO = {
+    name: 'PO',
+    typeInfos: [ /* ... */ ],
+    elementInfos: [{
+        elementName: 'purchaseOrder',
+        typeInfo: 'PO.PurchaseOrderType'
+    }, {
+        elementName: 'comment',
+        typeInfo: 'String'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+<p><a href="http://jsfiddle.net/lexi/Fq5cD/">Fiddle</a>.</p>
+
+
+<p>The mapping above basicaly says that <code>&lt;purchaseOrder .../&gt;</code> element should be processed using the <code>PO.PurchaseOrderType</code> type and <code>&lt;comment.../&gt;</code> using the (built-in) string type.</p>
+
+
+<p>See the <ac:link ac:anchor="Element declarations"><ac:link-body>element declarations</ac:link-body></ac:link> section for more information.</p>
+
+
+<h3>Default element and attribute namespaces</h3>
+
+
+<p>Element an attribute names can be declared using simple strings, for instance <code>elementName: 'comment'</code>. If you use namespaces (I hope you do), you can the use the <code>defaultElementNamespaceURI</code> or <code>defaultAttributeNamespaceURI</code> to declare the namespace for such names. Consider the following example of the mapping.</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var Qualified = {
+    name: 'Qualified ',
+    defaultElementNamespaceURI: 'urn:qualified',
+    elementInfos: [{
+        elementName: 'comment',
+        typeInfo: 'String'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This will suit XML like:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+<q:comment xmlns:q="urn:qualified">Some text.</q:comment>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/UPeww/">Fiddle</a>.</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+
+<p>An alternative would have to declare the <code>elementName</code> like this:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var Qualified = {
+    name: 'Qualified ',
+    elementInfos: [{
+        elementName: {
+            namespaceURI: 'urn:qualified',
+            localPart: 'comment'
+        },
+        typeInfo: 'String'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+<p><a href="http://jsfiddle.net/lexi/Dgv9p/">Fiddle</a>.<br />
+Which is a little bit more cumbersome.</p></ac:rich-text-body></ac:structured-macro>
+
+</ac:confluence>

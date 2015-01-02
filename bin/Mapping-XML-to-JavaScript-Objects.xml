@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h1>Mapping XML to JavaScript Objects</h1>
+<p>Jsonix needs XML/object mappings to operate. These mappings can be created manually or generated from an XML Schema. Either way, they are just simple JavaScript objects which define how XML should be mapped to properties of objects and vice versa.<br /> This sections explains concepts of these mappings and describes how to create them.</p>
+<h2>Basic concepts</h2>
+<p>Jsonix mappings are defined in a <em>module object</em> which provides information about declared types and XML elements which they are mapped to. Below is a very simple module <code>One</code> which declares a complex type <code>One.ValueType</code> (containing a single property <code>value</code>) and maps this type to the global XML element <code>value</code>:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var One = {
+    name: 'One',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'ValueType',
+        propertyInfos: [{
+            name: 'data',
+            type: 'value',
+            typeInfo: 'String'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'value',
+        typeInfo: 'One.ValueType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Provided this module object, we can create a Jsonix context and use it for marshalling or unmarshalling:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var context = new Jsonix.Context([One]);
+var unmarshaller = context.createUnmarshaller();
+var data = unmarshaller.unmarshalString('<value>Some text.</value>');
+console.log(data);
+]]></ac:plain-text-body></ac:structured-macro>
+<p>See the <a href="http://jsfiddle.net/lexi/9yG7b/">Fiddle</a> for this example.</p>
+<p>Now we can enumerate basic components of Jsonix mappings:</p>
+<ul>
+<li><ac:link ac:anchor="Modules" /></li>
+<li><ac:link ac:anchor="Types" /> and <ac:link ac:anchor="Properties" /></li>
+<li><ac:link ac:anchor="Element declarations" /></li></ul>
+<p>These components will be described in the following sections.</p>
+<p><ac:structured-macro ac:name="include"><ac:parameter ac:name=""><ac:link><ri:page ri:content-title="Modules" /></ac:link></ac:parameter></ac:structured-macro> <ac:structured-macro ac:name="include"><ac:parameter ac:name=""><ac:link><ri:page ri:content-title="Element Declarations" /></ac:link></ac:parameter></ac:structured-macro> <ac:structured-macro ac:name="include"><ac:parameter ac:name=""><ac:link><ri:page ri:content-title="Types" /></ac:link></ac:parameter></ac:structured-macro> <ac:structured-macro ac:name="include"><ac:parameter ac:name=""><ac:link><ri:page ri:content-title="Properties" /></ac:link></ac:parameter></ac:structured-macro><ac:structured-macro ac:name="include"><ac:parameter ac:name=""><ac:link><ri:page ri:content-title="Compact Naming" /></ac:link></ac:parameter></ac:structured-macro></p>
+</ac:confluence>

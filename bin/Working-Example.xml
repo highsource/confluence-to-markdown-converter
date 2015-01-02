@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h1>Working Example</h1>
+
+
+<p>This chapter demonstrates the usage of Jsonix in a classic &quot;purchase order&quot; example.</p>
+
+
+<p>Assume you need to develop a JavaScript program which should process an XML in the following XML Schema:</p>
+
+
+<ul>
+	
+<li><a href="http://www.w3.org/TR/xmlschema-0/#po.xsd">Purchase order schema</a> from the <a href="http://www.w3.org/TR/xmlschema-0/">XML Schema Primer</a>.</li>
+</ul>
+
+
+
+<p>Here's an example of XML for this schema:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<purchaseOrder orderDate="1999-10-20">
+  <shipTo country="US">
+    <name>Alice Smith</name>
+    <street>123 Maple Street</street>
+    <city>Mill Valley</city>
+    <state>CA</state>
+    <zip>90952</zip>
+  </shipTo>
+  <billTo country="US">
+    <name>Robert Smith</name>
+    <street>8 Oak Avenue</street>
+    <city>Old Town</city>
+    <state>PA</state>
+    <zip>95819</zip>
+  </billTo>
+  <comment>Hurry, my lawn is going wild!</comment>
+  <items>
+    <item partNum="872-AA">
+      <productName>Lawnmower</productName>
+      <quantity>1</quantity>
+      <USPrice>148.95</USPrice>
+      <comment>Confirm this is electric</comment>
+    </item>
+    <item partNum="926-AA">
+      <productName>Baby Monitor</productName>
+      <quantity>1</quantity>
+      <USPrice>39.98</USPrice>
+      <shipDate>1999-05-21</shipDate>
+    </item>
+  </items>
+</purchaseOrder>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<h2>Usage example</h2>
+
+
+<p>Here's how you would parse this XML document with Jsonix:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+// The PO variable provides Jsonix mappings for the purchase order test case
+// Its definition will be shown in the next section
+
+var PO = {
+    // ... Declaration of Jsonix mappings for the purchase order schema ...
+};
+
+
+// First we construct a Jsonix context - a factory for unmarshaller (parser)
+// and marshaller (serializer)
+var context = new Jsonix.Context([PO]);
+
+// Then we create a unmarshaller
+var unmarshaller = context.createUnmarshaller();
+
+// Unmarshal an object from the XML retrieved from the URL
+unmarshaller.unmarshalURL('po.xml',
+// This callback function will be provided with the result
+// of the unmarshalling
+function (unmarshalled) {
+    console.log(unmarshalled.value.shipTo.name); // Alice Smith
+    console.log(unmarshalled.value.items.item[1].productName); // Baby Monitor
+});
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>The callback function will receive the result of the unmarshalling in a form of a JavaScript object. Here's how it would look like in JavaScript:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: "purchaseOrder"
+    },
+    value: {
+        orderDate: new Date(1999, 10, 20),
+        shipTo: {
+            country: "US",
+            name: "Alice Smith",
+            street: "123 Maple Street",
+            city: "Mill Valley",
+            state: "CA",
+            zip: 90952
+        },
+        billTo: {
+            name: "Robert Smith",
+            street: "8 Oak Avenue",
+            city: "Old Town",
+            state: "PA",
+            country: "US",
+            zip: 95819
+        },
+        comment: 'Hurry, my lawn is going wild!',
+        items: {
+            item: [{
+                partNum: "872-AA",
+                productName: "Lawnmower",
+                quantity: 1,
+                usPrice: 148.95,
+                comment: "Confirm this is electric"
+            }, {
+                partNum: '926-AA',
+                productName: 'Baby Monitor',
+                quantity: 1,
+                usPrice: 39.98,
+                shipDate: new Date(1999, 4, 21)
+            }]
+        }
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Here's how marshalling of a JavaScript object into XML would look like:</p>
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+// Create a marshaller
+var marshaller = context.createMarshaller();
+// Marshal a JavaScript Object as XML (DOM Document)
+var doc = marshaller.marshalDocument({
+    name: {
+        localPart: "purchaseOrder"
+    },
+    value: {
+        orderDate: {
+            year: 1999,
+            month: 10,
+            day: 20
+        },
+        shipTo: {
+            country: "US",
+            name: "Alice Smith",
+            street: "123 Maple Street",
+            city: "Mill Valley",
+            state: "CA",
+            zip: 90952
+        },
+        billTo: {
+            name: "Robert Smith",
+            street: "8 Oak Avenue",
+            city: "Old Town",
+            state: "PA",
+            country: "US",
+            zip: 95819
+        }, // ...
+    }
+});
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Try it online in a <a href="http://jsfiddle.net/lexi/LP3DC/">fiddle</a>.</p>
+
+
+<h2>Defining mappings</h2>
+
+
+<p>Now let us take a look at the XML/object mappings, the part we skipped previously:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var PO = {
+    name: 'PO',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'PurchaseOrderType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'shipTo',
+            elementName: 'shipTo',
+            typeInfo: 'PO.USAddress'
+        }, {
+            type: 'element',
+            name: 'billTo',
+            elementName: 'billTo',
+            typeInfo: 'PO.USAddress'
+        }, {
+            type: 'element',
+            name: 'comment',
+            elementName: 'comment',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'items',
+            elementName: 'items',
+            typeInfo: 'PO.Items'
+        }, {
+            name: 'orderDate',
+            typeInfo: 'Calendar',
+            attributeName: 'orderDate',
+            type: 'attribute'
+        }]
+    }, {
+        type: 'classInfo',
+        localName: 'Items',
+        propertyInfos: [{
+            type: 'element',
+            name: 'item',
+            collection: true,
+            elementName: 'item',
+            typeInfo: 'PO.Item'
+        }]
+    }, {
+        type: 'classInfo',
+        localName: 'USAddress',
+        propertyInfos: [{
+            type: 'element',
+            name: 'name',
+            elementName: 'name',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'street',
+            elementName: 'street',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'city',
+            elementName: 'city',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'state',
+            elementName: 'state',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'zip',
+            elementName: 'zip',
+            typeInfo: 'Decimal'
+        }, {
+            name: 'country',
+            typeInfo: 'String',
+            attributeName: 'country',
+            type: 'attribute'
+        }]
+    }, {
+        type: 'classInfo',
+        localName: 'Item',
+        propertyInfos: [{
+            type: 'element',
+            name: 'productName',
+            elementName: 'productName',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'quantity',
+            elementName: 'quantity',
+            typeInfo: 'Int'
+        }, {
+            type: 'element',
+            name: 'usPrice',
+            elementName: 'USPrice',
+            typeInfo: 'Decimal'
+        }, {
+            type: 'element',
+            name: 'comment',
+            elementName: 'comment',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'shipDate',
+            elementName: 'shipDate',
+            typeInfo: 'Calendar'
+        }, {
+            name: 'partNum',
+            typeInfo: 'String',
+            attributeName: 'partNum',
+            type: 'attribute'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'purchaseOrder',
+        typeInfo: 'PO.PurchaseOrderType'
+    }, {
+        elementName: 'comment',
+        typeInfo: 'String'
+    }]
+};
+// If we're in node.js environment, export the mappings
+if (typeof require === 'function') {
+  module.exports.PO = PO;
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Basically, Jsonix mappings is a JavaScript object which describes how XML constructs (simple and complex types, elements, attributes) should be represented in object form. From the other hand, Jsonix mappings define the target object structure: objects, properties, their types and cardinalities. XML/object mappings are required to guarantee strongly-structured and strongly-typed mapping.</p>
+
+
+<h2>Generating mappings from an XML Schema</h2>
+
+
+<p>As we've seen above, Jsonix needs XML/object mappings to operate. These mappings can be created manually, they are just simple JavaScript programs which use Jsonix API.</p>
+
+
+<p>There is, however, another possibility for creating Jsonix mappings: you can generate them automatically from an XML Schema. Jsonix provides a <em>schema compiler</em> which take an XML Schema as input and generates Jsonix mappings for it. So instead of writing <code>PO.js</code> per hand you can generate it from an XML Schema (<code>po.xsd</code>) using the Jsonix schema compiler:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[java
+  -jar jsonix-schema-compiler-full-<VERSION>.jar // Run executable Java archieve
+  -d mappings // Target directory
+  -p PO // Package/Module name
+  purchaseorder.xsd // Schema]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>You can <ac:link><ri:page ri:content-title="Downloads" /><ac:link-body>download</ac:link-body></ac:link> the complete example.</p>
+
+</ac:confluence>

@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h2>Types</h2>
+<p>A concept of <em>type</em> is a central concept in Jsonix mappings. Element declarations map XML elements onto types; most of the properties have a target type and so on.</p>
+<p>Jsonix distinguished two categories of types: <ac:link ac:anchor="Simple types"><ac:plain-text-link-body><![CDATA[simple]]></ac:plain-text-link-body></ac:link> and <ac:link ac:anchor="Complex types"><ac:plain-text-link-body><![CDATA[complex]]></ac:plain-text-link-body></ac:link> types. The difference between them is that complex types contain <ac:link ac:anchor="Properties"><ac:plain-text-link-body><![CDATA[properties]]></ac:plain-text-link-body></ac:link> whereas simple types don't.</p>
+<p>Either way, types can convert between XML structures (elements, attributes, character data) and JavaScript structures (objects, arrays, strings, numbers etc.).</p>
+<p>Each type <em>may</em> have a name which can be used to reference this type in mappings.</p>
+<h3>Simple types</h3>
+<p>Simple types convert between character data on XML side and primitive or basic types on the JavaScript side. For instance, Jsonix boolean type converts between <code>&quot;true&quot;</code> or <code>&quot;false&quot;</code> text on XML side and <code>true</code> or <code>false</code> boolean values on JavaScript.</p>
+<p>Jsonix provides supports most simple types defined in the XML Schema <ac:link ac:anchor="Build-in simple types"><ac:plain-text-link-body><![CDATA[out of the box]]></ac:plain-text-link-body></ac:link>. You can also define your own simple types using <ac:link ac:anchor="Deriving simple types by list"><ac:plain-text-link-body><![CDATA[derivation by list]]></ac:plain-text-link-body></ac:link>, <ac:link ac:anchor="Deriving simple types by union"><ac:plain-text-link-body><![CDATA[by union]]></ac:plain-text-link-body></ac:link>, defining <ac:link ac:anchor="Enum types"><ac:plain-text-link-body><![CDATA[enumerations]]></ac:plain-text-link-body></ac:link> or writing a <ac:link ac:anchor="Defining custom simple types"><ac:plain-text-link-body><![CDATA[custom simple type]]></ac:plain-text-link-body></ac:link>.</p>
+<h4>Built-in simple types</h4>
+<p>Jsonix supports most simple types defined in the XML Schema. These types are called <em>built-in</em> simple types and are based on the following hierarchy of types:</p>
+<p><a href="http://www.w3.org/TR/xmlschema-2/#built-in-datatypes"><ac:image><ri:attachment ri:filename="type-hierarchy.gif" /></ac:image></a></p>
+<p>To support this hierarchy, Jsonix declares an individual JavaScript class for each of these types. Each of the classes also has a pre-instantiated instance (ex. <code>Jsonix.Schema.XSD.String.INSTANCE</code>) which can be reference by name (ex. <code>String</code>). Below is the type mapping table:</p>
+<table>
+<tbody>
+<tr>
+<th>
+<p>XML Schema Type</p></th>
+<th>
+<p>Jsonix JavaScript Class</p></th>
+<th>
+<p>Jsonix Type Name</p></th></tr>
+<tr>
+<td>
+<p><code>anySimpleType</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.AnySimpleType</code></p></td>
+<td>
+<p><code>AnySimpleType</code></p></td></tr>
+<tr>
+<td>
+<p><code>string</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.String</code></p></td>
+<td>
+<p><code>String</code></p></td></tr>
+<tr>
+<td>
+<p><code>normalizedString</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.NormalizedString</code></p></td>
+<td>
+<p><code>NormalizedString</code></p></td></tr>
+<tr>
+<td>
+<p><code>token</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Token</code></p></td>
+<td>
+<p><code>Token</code></p></td></tr>
+<tr>
+<td>
+<p><code>language</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Language</code></p></td>
+<td>
+<p><code>Language</code></p></td></tr>
+<tr>
+<td>
+<p><code>Name</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Name</code></p></td>
+<td>
+<p><code>Name</code></p></td></tr>
+<tr>
+<td>
+<p><code>NCName</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.NCName</code></p></td>
+<td>
+<p><code>NCName</code></p></td></tr>
+<tr>
+<td>
+<p><code>boolean</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Boolean</code></p></td>
+<td>
+<p><code>Boolean</code></p></td></tr>
+<tr>
+<td>
+<p><code>base64Binary</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Base64Binary</code></p></td>
+<td>
+<p><code>Base64Binary</code></p></td></tr>
+<tr>
+<td>
+<p><code>hexBinary</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.HexBinary</code></p></td>
+<td>
+<p><code>HexBinary</code></p></td></tr>
+<tr>
+<td>
+<p><code>float</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Float</code></p></td>
+<td>
+<p><code>Float</code></p></td></tr>
+<tr>
+<td>
+<p><code>decimal</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Decimal</code></p></td>
+<td>
+<p><code>Decimal</code></p></td></tr>
+<tr>
+<td>
+<p><code>integer</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Integer</code></p></td>
+<td>
+<p><code>Integer</code></p></td></tr>
+<tr>
+<td>
+<p><code>nonPositiveInteger</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.NonPositiveInteger</code></p></td>
+<td>
+<p><code>NonPositiveInteger</code></p></td></tr>
+<tr>
+<td>
+<p><code>negativeInteger</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.NegativeInteger</code></p></td>
+<td>
+<p><code>NegativeInteger</code></p></td></tr>
+<tr>
+<td>
+<p><code>long</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Long</code></p></td>
+<td>
+<p><code>Long</code></p></td></tr>
+<tr>
+<td>
+<p><code>int</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Int</code></p></td>
+<td>
+<p><code>Int</code></p></td></tr>
+<tr>
+<td>
+<p><code>short</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Short</code></p></td>
+<td>
+<p><code>Short</code></p></td></tr>
+<tr>
+<td>
+<p><code>byte</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Byte</code></p></td>
+<td>
+<p><code>Byte</code></p></td></tr>
+<tr>
+<td>
+<p><code>nonNegativeInteger</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.NonNegativeInteger</code></p></td>
+<td>
+<p><code>NonNegativeInteger</code></p></td></tr>
+<tr>
+<td>
+<p><code>unsignedLong</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.UnsignedLong</code></p></td>
+<td>
+<p><code>UnsignedLong</code></p></td></tr>
+<tr>
+<td>
+<p><code>unsignedInt</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.UnsignedInt</code></p></td>
+<td>
+<p><code>UnsignedInt</code></p></td></tr>
+<tr>
+<td>
+<p><code>unsignedShort</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.UnsignedShort</code></p></td>
+<td>
+<p><code>UnsignedShort</code></p></td></tr>
+<tr>
+<td>
+<p><code>unsignedByte</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.UnsignedByte</code></p></td>
+<td>
+<p><code>UnsignedByte</code></p></td></tr>
+<tr>
+<td>
+<p><code>positiveInteger</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.PositiveInteger</code></p></td>
+<td>
+<p><code>PositiveInteger</code></p></td></tr>
+<tr>
+<td>
+<p><code>double</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Double</code></p></td>
+<td>
+<p><code>Double</code></p></td></tr>
+<tr>
+<td>
+<p><code>anyURI</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.AnyURI</code></p></td>
+<td>
+<p><code>AnyURI</code></p></td></tr>
+<tr>
+<td>
+<p><code>QName</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.QName</code></p></td>
+<td>
+<p><code>QName</code></p></td></tr>
+<tr>
+<td>
+<p><code>duration</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Duration</code></p></td>
+<td>
+<p><code>Duration</code></p></td></tr>
+<tr>
+<td>
+<p><code>dateTime</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.DateTime</code></p></td>
+<td>
+<p><code>DateTime</code></p></td></tr>
+<tr>
+<td>
+<p><code>time</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Time</code></p></td>
+<td>
+<p><code>Time</code></p></td></tr>
+<tr>
+<td>
+<p><code>date</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.Date</code></p></td>
+<td>
+<p><code>Date</code></p></td></tr>
+<tr>
+<td>
+<p><code>gYearMonth</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.GYearMonth</code></p></td>
+<td>
+<p><code>GYearMonth</code></p></td></tr>
+<tr>
+<td>
+<p><code>gYear</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.GYear</code></p></td>
+<td>
+<p><code>GYear</code></p></td></tr>
+<tr>
+<td>
+<p><code>gMonthDay</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.GMonthDay</code></p></td>
+<td>
+<p><code>GMonthDay</code></p></td></tr>
+<tr>
+<td>
+<p><code>gDay</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.GDay</code></p></td>
+<td>
+<p><code>GDay</code></p></td></tr>
+<tr>
+<td>
+<p><code>gMonth</code></p></td>
+<td>
+<p><code>Jsonix.Schema.XSD.GMonth</code></p></td>
+<td>
+<p><code>GMonth</code></p></td></tr></tbody></table><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p><code>QName</code> is supported by Jsonix since version 2.1.0 and generated by Jsonix Schema Compiler since version 2.2.0.</p></ac:rich-text-body></ac:structured-macro>
+<p>Consider the following declaration of the global element:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[var MyModule = {
+    elementInfos: [{
+        elementName: 'comment',
+        typeInfo: 'String'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+<p>This maps the following element:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[<comment>Some text</comment>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Onto the following data:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[{
+    name: {
+        localPart: 'comment'
+    }
+    value: 'Some text'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/vbXCy/">Fiddle</a>.</p><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Although all classes are defined, not all the types are already implemented. See <a href="http://jira.highsource.org/browse/JSNX-1">JSNX-1</a> and <a href="http://jira.highsource.org/browse/JSNX-2">JSNX-2</a> issues.</p></ac:rich-text-body></ac:structured-macro><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Since 2.0.11, Jsonix simple types always accept string when marshalling. Under the hood, they'll check if the provided value is a string. if it is, it will be parsed and then printen. So you can use <code>'1234'</code><span> as well as 1234 as an integer value. Note that the string value is not output directly, but parsed/printed to ensure the correct type and valid value.</span></p></ac:rich-text-body></ac:structured-macro>
+<h4>Deriving simple types by list</h4>
+<p>In addition to atomic simple types Jsonix supports list simple types. Such list types map an <em>array</em> of values to string (delimiter-separated items of the array).<br /> Derived type is defined as follows:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[// List type declaration syntax
+{
+    // Indicates this is a "list" type info
+    type: 'list',
+    // Type of the list elements, required
+    typeInfo: 'String',
+    // Name of the type, optional. Defaults to typeInfo.name + '*', ex. 'String*'
+    name: 'Strings',
+    // Separator characters, optional. Defaults to ' '
+    separator: ' '
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Example:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[var MyModule = {
+    elementInfos: [{
+        elementName: 'comment',
+        typeInfo: {
+            type: 'list',
+            typeInfo: 'String'
+        }
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+<p>XML element:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[<comment>Some text</comment>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Data:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[{
+    name: {
+        localPart: 'comment'
+    }
+    value: ['Some', text']
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/hxqXh/">Fiddle</a>.</p><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Here's XML Schema analog:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[<xsd:simpleType>
+	<xsd:list itemType="xsd:string"/>
+</xsd:simpleType>
+]]></ac:plain-text-body></ac:structured-macro></ac:rich-text-body></ac:structured-macro>
+<p>Unlike XML Schema, Jsonix allows deriving list types from non-atomic types (ex. other list types). Below is an example of a list of lists of doubles:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[{
+    type: 'list',
+    typeInfo: {
+        type: 'list',
+        typeInfo: 'Double'
+    },
+    separator: ','
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p>You can use this type to convert between the string <code>0 0, 0 1, 1 1, 1 0, 0 0</code> and JavaScript array structure <code>[ [ 0, 0 ], [ 0, 1 ], [ 1, 1 ], [ 1, 0 ], [ 0, 0 ] ]</code>.</p>
+<p><a href="http://jsfiddle.net/lexi/vQPSJ/">Fiddle</a>.</p>
+<h4>Deriving simple types by union</h4>
+<p>This feature is planned but not supported, see <a href="http://jira.highsource.org/browse/JSNX-9">JSNX-9</a>.</p>
+<h4>Deriving simple types by restriction</h4>
+<p>Definition of complex types by restriction is not supported at the moment.</p>
+<h4>Defining enums</h4><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Since 2.0.12 Jsonix supports enum types.</p></ac:rich-text-body></ac:structured-macro>
+<p><span style="line-height: 1.4285715;">You can define enum types by listing individual values. You can list them either as an array, or as an object.</span></p>
+<p>Enum types have a base type info (string by default).</p>
+<p>Example of an array definition:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="language">js</ac:parameter><ac:plain-text-body><![CDATA[{
+	localName: 'IntegerEnums',
+	type: 'enumInfo',
+	baseTypeInfo: 'Integer',
+	values: {
+		'one' : 1,
+		'two' : '2',
+		'three' : 3
+	}
+}]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/ksyehopx/">Fiddle</a>.</p>
+<p>In case on an array definition you list individual values. If you provide a string as a value, this value will first get parsed with the enum's base type info. In the example above, <code>'2'</code> will be parsed to the integer <code>2</code>.</p>
+<p>Example of an object definition:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="language">js</ac:parameter><ac:plain-text-body><![CDATA[ {
+	localName: 'IntegerEnums',
+	type: 'enumInfo',
+	baseTypeInfo: 'Integer',
+	values: {
+		'one' : 1,
+		'two' : '2',
+		'three' : 3
+	}
+} ]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/phmxp7eu/">Fiddle</a>.</p>
+<p>In case of an object definition you define key/value pairs. When unmarshalling, you'll get your key (string) as the result. For instance, if you unmarshal <code>2</code> with the type above, you'll get <code>two</code> (string) as value. As with arrays, if you provide a string value, it will first get parsed with enum's base type.</p>
+<h4>Defining custom simple types</h4>
+<p>Type system in Jsonix is extensible, so if your requirements are not covered by the built-in simple types, you can write custom simple types to match your needs.</p>
+<p>Jsonix requires an <em>instance</em> of a simple types to provide the following properties and functions:</p>
+<ul>
+<li><code>name</code> - Logical name of the type to be used in mappings.</li>
+<li><code>typeName</code> - Qualified name of the type (as if you'd define it in an XML Schema). Optional.</li>
+<li><code>CLASS_NAME</code> - String property which provides the name of the class. Required.</li>
+<li><code>unmarshal</code> - Function which accepts <code>Jsonix.Context</code> and <code>Jsonix.XML.Input</code> and returns unmarshalled value.</li>
+<li><code>marshal</code> - Function which accepts <code>Jsonix.Context</code>, value and <code>Jsonix.XML.Output</code> and marshalls the given value into the output.</li></ul>
+<p>In most cases you can just inherit from <code>Jsonix.Schema.XSD.AnySimpleType</code> and implement <code>print</code> and <code>parse</code> methods. See the following custom yes/no boolean typefor example:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var MyModule = {
+    name: 'MyModule',
+    typeInfos: [new(Jsonix.Class(Jsonix.Schema.XSD.AnySimpleType, {
+        name: 'MyModule.YesNo',
+        typeName: new Jsonix.XML.QName('urn:my', 'YesNo'),
+        print: function (value) {
+            Jsonix.Util.Ensure.ensureBoolean(value);
+            return value ? 'yes' : 'no';
+        },
+        parse: function (text) {
+            Jsonix.Util.Ensure.ensureString(text);
+            if (text.toLowerCase() === 'yes') {
+                return true;
+            } else if (text.toLowerCase() === 'no') {
+                return false;
+            } else {
+                throw "Either [yes] or [no] expected as boolean value.";
+            }
+        },
+        CLASS_NAME: 'MyModule.YesNo'
+    }))()],
+    elementInfos: [{
+        elementName: 'data',
+        typeInfo: 'MyModule.YesNo'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/hDLKF">Fiddle</a>.</p>
+<h3>Complex types</h3>
+<p>Complex type has a name and contains a number of properties.</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[// Complex type declaration syntax
+{
+    // Local name of the type, required
+    localName: 'ExtendedType',
+    // Array of properties of this complex type, required
+    propertyInfos: [ /* ... */ ],
+    // Base type info, optional
+    baseTypeInfo: 'MyModule.BaseType'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p>The name is defined using the <code>localName</code> property. The full name of the type will be composed of the name of the module and the local name of the complex type, with <code>.</code> as delimiter (<code>MyModule.DataType</code> in the example above. Name of the type can be used to reference this type in mappings (note the declaration of the <code>data</code> element above).</p>
+<p>Properties are provided using the <code>propertyInfos</code> property. In the example above, we define two properties, <code>key</code> (mapped onto the <code>key</code> attribute) and <code>value</code> (mapped onto the textual contents of the element.</p>
+<p>Complex types can be defined using the <code>typeInfos</code> property of the module:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'DataType',
+        propertyInfos: [{
+            type: 'value',
+            name: 'value',
+            typeInfo: 'Integer'
+        }, {
+            type: 'attribute',
+            name: 'key',
+            attributeName: 'key',
+            typeInfo: 'String'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'data',
+        typeInfo: 'MyModule.DataType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/c6EsM/">Fiddle</a>.</p>
+<p>The mapping above converts between the following XML:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[<data key="one">1</data>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>And the following JavaScript object:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[{
+    name: {
+        localPart: 'data'
+    },
+    value: {
+        key: 'one',
+        value: 1
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/c6EsM/">Fiddle</a>.</p>
+<p>See <ac:link ac:anchor="Properties"><ac:plain-text-link-body><![CDATA[#Properties]]></ac:plain-text-link-body></ac:link> for more information on defining properties.</p>
+<p>Properties declared in a complex type define both the structure of the JavaScript object as well as structure of the XML it will be mapped onto.</p>
+<h4>Defining complex types by extension</h4>
+<p>Complex types can be defined as extensions for other content types. This is achieved by setting the <code>baseTypeInfo</code> property of the extending type to point to the base type. Consider the following example:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'BaseType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'alpha',
+            elementName: 'Alpha',
+            typeInfo: 'String'
+        }, {
+            type: 'element',
+            name: 'beta',
+            elementName: 'Beta',
+            collection: true,
+            typeInfo: 'Integer'
+        }]
+    }, {
+        type: 'classInfo',
+        localName: 'ExtendedType',
+        baseTypeInfo: 'MyModule.BaseType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'gamma',
+            elementName: 'Gamma',
+            typeInfo: 'AnyURI'
+        }, {
+            type: 'element',
+            name: 'delta',
+            elementName: 'Delta',
+            collection: true,
+            typeInfo: 'Date'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'Base',
+        typeInfo: 'MyModule.BaseType'
+    }, {
+        elementName: 'Extended',
+        typeInfo: 'MyModule.ExtendedType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+<p>In this example the base type has the properties <code>alpha</code> and <code>beta</code> whereas the extended type has four properties <code>alpha</code>, <code>beta</code>, <code>gamma</code> and <code>delta</code>. This corresponds to the following XML Schema:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[<xs:complexType name="BaseType">
+	<xs:sequence>
+		<xs:element name="Alpha" type="xs:string" minOccurs="0"/>
+		<xs:element name="Beta" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ExtendedType">
+	<xs:complexContent>
+		<xs:extension base="BaseType">
+			<xs:sequence>
+				<xs:element name="Gamma" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="Delta" type="xs:date" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Here's a couple of examples of XML and equivalent JavaScript objects.</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[<Base>
+	<Alpha>one</Alpha>
+	<Beta>2</Beta>
+	<Beta>3</Beta>
+</Base>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Turns into:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[{
+	name : { localPart: 'Base' },
+	value : {
+		alpha : 'one',
+		beta : [ 2, 3 ]
+	},
+	TYPE_NAME: 'MyModule.BaseType'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Next,</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[<Extended>
+	<Alpha>one</Alpha>
+	<Beta>2</Beta>
+	<Beta>3</Beta>
+	<Gamma>urn:four</Gamma>
+	<Delta>2005-06-07</Delta>
+	<Delta>2008-09-10</Delta>
+</Extended>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>turns into:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[{
+	name : { localPart : 'extended' },
+	value : {
+		alpha : 'one',
+		beta : [ 2, 3 ],
+		gamma : 'urn:four',
+		delta : [ new Date(2005, 5, 7), new Date(2008, 8, 9) ]
+	}
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p><a href="http://jsfiddle.net/lexi/UjL6j">Fiddle</a>.</p>
+<h4>Defining complex types by restriction</h4>
+<p>Definition of complex types by restriction is not supported.</p>
+
+</ac:confluence>

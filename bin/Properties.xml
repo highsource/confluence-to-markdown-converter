@@ -1,0 +1,1559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h2>Properties</h2>
+
+
+<p>Properties define contents of a complex type. From one hand, they configure the structure of a JavaScript object which is mapped by this complex type. From the other hand, they describe, how this object will be presented in an XML form.</p>
+
+
+<p>Jsonix allows you to map character content, attributes and elements using following property types:</p>
+
+
+<ul>
+	
+<li>Character content
+	
+<ul>
+		
+<li><ac:link ac:anchor="Value property"><ac:link-body>#Value property</ac:link-body></ac:link></li>
+	</ul>
+	</li>
+	
+<li>Attributes
+	
+<ul>
+		
+<li><ac:link ac:anchor="Attribute property"><ac:link-body>#Attribute property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Any attribute property"><ac:link-body>#Any attribute property</ac:link-body></ac:link></li>
+	</ul>
+	</li>
+	
+<li>Elements
+	
+<ul>
+		
+<li><ac:link ac:anchor="Element property"><ac:link-body>#Element property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Elements property"><ac:link-body>#Elements property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Element map property"><ac:link-body>#Element map property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Element reference property"><ac:link-body>#Element reference property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Element references property"><ac:link-body>#Element references property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Any element property"><ac:link-body>#Any element property</ac:link-body></ac:link></li>
+	</ul>
+	</li>
+</ul>
+
+
+
+<h3>Basic property characteristics</h3>
+
+
+<p>Property types enumerated above have different functionality. However, there are some basic characteristics shared by most properties.</p>
+
+
+<h4>Property name</h4>
+
+
+<p>Every property must have a name (string). Primary function of this name is to define the name of the matching JavaScript object property.</p>
+
+
+<p>Consider the following example:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'MyType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'data',
+            elementName: 'content'
+        }]
+    }],
+    elementInfos: [{ /* ...*/ }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>The property named <code>data</code> is mapped to the element <code>content</code>. So if we'll unmarshal the following element:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <content>one</content>
+</root>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>We'll get the <code>data</code> property in the JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        data: 'one',
+        TYPE_NAME: 'MyModule.MyType'
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/593Je/">Fiddle</a>.</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Name of the property is also used by <ac:link ac:anchor="Attribute property"><ac:link-body>attribute</ac:link-body></ac:link>, <ac:link ac:anchor="Element property"><ac:link-body>element</ac:link-body></ac:link> and <ac:link ac:anchor="Element reference property"><ac:link-body>element reference</ac:link-body></ac:link> properties to default the target XML attribute or element names if they are omitted.</p></ac:rich-text-body></ac:structured-macro>
+
+
+<h4>Property cardinality</h4>
+
+
+<p>Element properties also have the cardinality characteristic; they can be collection or single properties.</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p><ac:link ac:anchor="Value property"><ac:link-body>Value</ac:link-body></ac:link>, <ac:link ac:anchor="Attribute property"><ac:link-body>attribute</ac:link-body></ac:link> and <ac:link ac:anchor="Any attribute property"><ac:link-body>any attribute</ac:link-body></ac:link> properties are always single.</p></ac:rich-text-body></ac:structured-macro>
+
+
+<p>Collection properties handle repeatable elements.</p>
+
+
+<p>Consider the following collection property declaration:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    type: 'element',
+    name: 'data',
+    elementName: 'content',
+    collection : true
+}]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This will unmarshal the following XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <content>one</content>
+    <content>two</content>
+    <content>three</content>
+</root>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Into the following JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{  
+   data : ['one', 'two', 'three']
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/DT4Ne/">Fiddle</a>.</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Note that this is different from <ac:link ac:anchor="Deriving simple types by list"><ac:link-body>deriving types by list</ac:link-body></ac:link>:</p>
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <content>one two three</content>
+</root>
+]]></ac:plain-text-body></ac:structured-macro></ac:rich-text-body></ac:structured-macro>
+
+
+<h4>Mixed properties</h4>
+
+
+<p>Some of the properties (namely <ac:link ac:anchor="Element reference property"><ac:link-body>Element reference</ac:link-body></ac:link>/<ac:link ac:anchor="Element references property"><ac:link-body>references</ac:link-body></ac:link> and <ac:link ac:anchor="Any element property"><ac:link-body>any element</ac:link-body></ac:link> properties) can be declared as <em>mixed</em>. Mixed properties can handle elements together with character content. Consider the following example:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'MyType',
+        propertyInfos: [{
+            type: 'elementRef',
+            name: 'data',
+            elementName: 'content',
+            collection : true,
+            mixed: true
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'root',
+        typeInfo: 'MyModule.MyType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Here's an example of XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <content>one</content>two<content>three</content>
+</root> 
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>And the equivalent JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        data: [{
+            name: {
+                localPart: 'content'
+            },
+            value: 'one'
+        },
+            'two', {
+            name: {
+                localPart: 'content'
+            },
+            value: 'three'
+        }]
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/nrXUu/">Fiddle</a>.</p>
+
+
+<h4>Wrapper elements</h4>
+
+
+<p>A common XML Schema design pattern is the usage of wrapper elements to enclose repeated elements, for instance:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <contents>
+        <content>one</content>
+        <content>two</content>
+        <content>three</content>
+    </contents>
+</root>
+]]></ac:plain-text-body></ac:structured-macro>		  
+
+
+<p>The <code>contents</code> element on its own has no meaning, it only encloses the <code>content</code> subelements. You can model such XML my using the <code>wrapperElementName</code> option in element properties:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'MyType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'data',
+            wrapperElementName: 'contents',
+            elementName: 'content',
+            collection: true
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'root',
+        typeInfo: 'MyModule.MyType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>The XML sample above will be marshalled into the following JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        data: [ 'one', 'two', 'three']
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/3S6YZ/">Fiddle</a>.</p>
+
+
+<h3>Defining properties</h3>
+
+
+<h4>Value property</h4>
+
+
+<p>Property declaration syntax:</p>
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'value',
+
+    // Name of the JavaScript object property
+    name: 'data',
+
+    // Type of the property
+    typeInfo: 'Double'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Value property maps to the textual content of the XML element:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'MyValueType',
+        propertyInfos: [{
+            type: 'value',
+            typeInfo: 'Double',
+            name: 'data'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'root',
+        typeInfo: 'MyModule.MyValueType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>1.234</root>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript Object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        data: 1.234,
+        TYPE_NAME: 'MyModule.MyValueType'
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/RJN9f/">Fiddle</a>.</p>
+
+
+<p>Usage constraints:</p>
+
+
+<ul>
+	
+<li>Complex type can define at most one value property.</li>
+	
+<li>Value property can be used with <ac:link ac:anchor="Attribute property"><ac:link-body>attribute</ac:link-body></ac:link> or <ac:link ac:anchor="Any attribute property"><ac:link-body>any attribute</ac:link-body></ac:link> properties. It can not be used with:
+	
+<ul>
+		
+<li><ac:link ac:anchor="Element property"><ac:link-body>#Element property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Elements property"><ac:link-body>#Elements property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Element reference property"><ac:link-body>#Element reference property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Element references property"><ac:link-body>#Element references property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Element references property"><ac:link-body>#Element references property</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Mixed properties"><ac:link-body>#Mixed properties</ac:link-body></ac:link> without wrapper elements</li>
+	</ul>
+	</li>
+</ul>
+
+
+
+<h5>Defining complex type with simple content</h5>
+
+
+<p>The <ac:link ac:anchor="Value property"><ac:link-body>value property</ac:link-body></ac:link> can be used to define complex type with simple content. Consider the following XML Schema fragment:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<xs:element name="root">
+	<xs:complexType>
+		<xs:simpleContent>
+			<xs:extension base="xs:double"/>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:element>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>The anonymous complex type within the <code>root</code> element is a complex type with simple content. This is how it can be mapped with Jsonix:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'classInfo',
+    localName: 'RootType',
+    propertyInfos: [{
+        type: 'value',
+        typeInfo: 'Double',
+        name: 'value'
+    }]
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/fjrdA/">Fiddle</a>.</p>
+
+
+<h4>Attribute property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'attribute',
+
+    // Name of the JavaScript object property
+    name: 'data',
+
+    // Attribute name, string or QName, defaults to the name of the property
+    attributeName : 'myAttribute',
+    // Or as QName
+    // attributeName : { localPart: 'myAttribute', namespaceURI : 'urn:mynamespace' }
+
+    // Type of the property
+    typeInfo: 'Double'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Mapping example:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'InputType',
+        propertyInfos: [{
+            type: 'attribute',
+            typeInfo: 'Boolean',
+            name: 'checked'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'input',
+        typeInfo: 'MyModule.InputType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<input checked="false"/>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'input'
+    },
+    value: {
+        checked: false,
+        TYPE_NAME: 'MyModule.InputType'
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/ND8Mr/">Fiddle</a>.</p>
+
+
+<p>Usage constraints:</p>
+
+
+<ul>
+	
+<li>Complex type can define at most one attribute property for the given attribute name.</li>
+</ul>
+
+
+
+<h4>Any attribute property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'anyAttribute',
+
+    // Name of the JavaScript object property
+    name: 'attributes'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>&quot;Any attribute&quot; property maps to the attributes of the XML element.</p>
+
+
+<p>Value of the property is a map of the form:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+	attribute0: value0,
+	attribute1: value1,
+	attribute2: value2,
+	...
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Where <code>attributeX</code> is the string representation of the qualified attribute name, <code>valueX</code> is the string value of the attribute.</p>
+
+
+<p>Mapping example:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'AnyAttributeType',
+        propertyInfos: [{
+            type: 'anyAttribute',
+            name: 'attributes'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'anyAttribute',
+        typeInfo: 'MyModule.AnyAttributeType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<anyAttribute
+  a="a"
+  b:b="b" xmlns:b="urn:b"
+  c:c="c" xmlns:c="urn:c"/>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript Object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'anyAttribute'
+    },
+    value: {
+        attributes: {
+            a: 'a',
+                '{urn:b}b': 'b',
+                '{urn:c}c': 'c'
+        }
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/wPtzw/">Fiddle</a>.</p>
+
+
+<p>Usage constraints:</p>
+
+
+<ul>
+	
+<li>Complex type can define at most one &quot;any attribute&quot; property.</li>
+</ul>
+
+
+
+<h4>Element property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'element',
+
+    // Name of the property, required
+    name: 'element',
+
+    // Whether the property is collection or not, defaults to false
+    collection: false,
+
+    // Name of the element, optional, defaults to the name of the property
+    elementName: 'myElement',
+    // Or, as QName
+    // elementName : { localPart: 'myElement', namespaceURI: 'urn:mynamespace' }
+
+    // Name of the wrapper element, defaults to null
+    wrapperElementName: 'myElements',
+    // Or, as QName
+    // wrapperElementName : { localPart: 'myElements', namespaceURI: 'urn:mynamespace' }
+
+    // Type of the property (can be simple or complex), required
+    typeInfo: 'String'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Element property maps a JavaScript object property onto the XML element.</p>
+
+
+<p>See <ac:link ac:anchor="Wrapper elements"><ac:link-body>#Wrapper elements</ac:link-body></ac:link> for an explanation of the <code>wrapperElementName</code> option.</p>
+
+
+<p>Usage constraints:</p>
+
+
+<ul>
+	
+<li>Element property can not be used with:
+	
+<ul>
+		
+<li><ac:link ac:anchor="Value property"><ac:link-body>Value properties</ac:link-body></ac:link></li>
+		
+<li><ac:link ac:anchor="Mixed properties"><ac:link-body>Mixed properties</ac:link-body></ac:link> without wrapper elements</li>
+	</ul>
+	</li>
+</ul>
+
+
+
+<h5>Element property example - single element</h5>
+
+
+<p>Mapping example:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'ElementType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'element',
+            typeInfo: 'String'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'elements',
+        typeInfo: 'MyModule.ElementType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">XML</ac:parameter><ac:plain-text-body><![CDATA[
+<elements>
+   <element>fire</element>
+</elements>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'elements'
+    },
+    value: {
+        element: 'fire'
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/TS7M5/">Fiddle</a>.</p>
+
+
+<h4>Elements property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'elements',
+
+    // Name of the property, required
+    name: 'elements',
+
+    // Whether the property is collection or not, defaults to false
+    collection: true,
+
+    // Name of the wrapper element, defaults to null
+    wrapperElementName: 'myElements',
+
+    // Element mappings, required
+    elementTypeInfos: [{
+
+        // Name of the element, required (can be string or a QName)
+        elementName: 'string',
+
+        // Type of the property , required
+        typeInfo: 'String'
+    }, {
+        elementName: 'integer',
+        typeInfo: 'Integer'
+    }]
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Elements property maps several XML elements onto one JavaScript object property.</p>
+
+
+<p>Elements property is provided with <code>elementTypeInfos</code>, an array of element/type mappings. These mappings are objects carrying <code>elementName</code>, string qualified name of the element and <code>typeInfo</code>, type of the element.</p>
+
+
+<p>When unmarshalling an element, this property uses the name of the element to find the corresponding type and then uses this type for actual unmarshalling.</p>
+
+
+<p>When marshalling a value, this property searches for a matching type for this value and then uses the corresponding element name to create the outgoing XML element.</p>
+
+
+<p>Mapping example:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'ElementsType',
+        propertyInfos: [{
+            type: 'elements',
+            name: 'elements',
+            wrapperElementName: 'elements',
+            collection: true,
+            elementTypeInfos: [{
+                elementName: 'string',
+                typeInfo: 'String'
+            }, {
+                elementName: 'integer',
+                typeInfo: 'Integer'
+            }]
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'root',
+        typeInfo: 'MyModule.ElementsType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <elements>
+        <string>one</string>
+        <integer>2</integer>
+        <string>three</string>
+    </elements>
+</root>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        elements: ['one', 2, 'three']
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/CHHnv/">Fiddle</a>.</p>
+
+
+<p>As you see, we're getting elements of different types (strings, integers) from differently-named elements (<code>string</code>, <code>integer</code>) in one array property <code>elements</code>. The <code>elementTypeInfos</code> definition of our elements property allows Jsonix to understand that <code>string</code> elements must be unmarshalled as strings, <code>integer</code> elements - as integers. During marshalling, Jsonix tries to find a matching type (that is, a type for which this given value would be an instance of) and then use the corresponding element name for marshalling.</p>
+
+
+<p>The &quot;instance of&quot; operator is implemented differently for simple and complex types.</p>
+
+
+<p>For simple types the &quot;instance of&quot; operator checks that value has an appropriate JavaScript type (like, <code>string</code> for strings, <code>number</code> for numeric types, <code>boolean</code> for booleans and so on). Simple type also checks that value is actually allowed (ex. integers are round numbers, bytes are in range from -128 to +127 and so on). This can surely be ambiguous, so caution is advised when mixing compatible simple types in one elements property.</p>
+
+
+<p>Values of complex types are objects so there is no reliable way to determine if a given object is considered as &quot;instance of&quot; a certain complex type. To overcome this difficulty, objects may carry a special-purpose <code>TYPE_NAME</code> property, for instance:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+	value : 'two',
+	TYPE_NAME : 'MyModule.ValueType'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Complex type thinks that value is an &quot;instance of&quot; itself if the value is an object and it has a string <code>TYPE_NAME</code> property matching the name of the complex type.</p>
+
+
+<h4>Element map property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    type: 'elementMap',
+
+    // Name of the property, required
+    name: 'element',
+
+    // Whether the property is collection or not, defaults to false
+    collection: true,
+
+    // Name of the element, optional, defaults to the name of the property (string or a QName)
+    elementName: 'myElement',
+
+    // Name of the wrapper element, defaults to null (string or a QName)
+    wrapperElementName: 'myElements',
+
+    // Declaration of the key property
+    key: {
+        type: 'attribute',
+        name: 'key',
+        typeInfo: 'String'
+    },
+
+    // Declaration of the value property
+    value: {
+        type: 'value',
+        name: 'value',
+        typeInfo: 'String'
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Element map property allows mapping one or more elements to an object/hashmap-valued property. Element map property is configured with two further properties which describe, what should be taken as a key of the hashmap and what as value.</p>
+
+
+<p>Since version 1.1 element map properties can be collections. In this case, values in the hashmap will be arrays. This allows modelling multimaps.</p>
+
+
+<p>Mapping example:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'ElementMapType',
+        propertyInfos: [{
+            type: 'elementMap',
+            name: 'element',
+            key: {
+                type: 'attribute',
+                name: 'key',
+                typeInfo: 'String'
+            },
+            value: {
+                type: 'value',
+                name: 'value',
+                typeInfo: 'String'
+            }
+        }, {
+            type: 'elementMap',
+            name: 'elements',
+            wrapperElementName: 'elements',
+            elementName: 'element',
+            key: {
+                type: 'attribute',
+                name: 'key',
+                typeInfo: 'String'
+            },
+            value: {
+                type: 'value',
+                name: 'value',
+                typeInfo: 'String'
+            }
+        }, {
+            type: 'elementMap',
+            name: 'elementCollection',
+            collection: true,
+            key: {
+                type: 'attribute',
+                name: 'key',
+                typeInfo: 'String'
+            },
+            value: {
+                type: 'value',
+                name: 'value',
+                typeInfo: 'String'
+            }
+        }, {
+            type: 'elementMap',
+            name: 'elementsCollection',
+            wrapperElementName: 'elementsCollection',
+            elementName: 'element',
+            collection: true,
+            key: {
+                type: 'attribute',
+                name: 'key',
+                typeInfo: 'String'
+            },
+            value: {
+                type: 'value',
+                name: 'value',
+                typeInfo: 'String'
+            }
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'elementMap',
+        typeInfo: 'MyModule.ElementMapType'
+    }]
+};]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<elementMap> 
+	<element key="one">earth</element> 
+	<element key="two">wind</element> 
+	<elements> 
+		<element key="three">fire</element> 
+		<element key="four">wood</element> 
+	</elements> 
+	<elementCollection key="one">1</elementCollection> 
+	<elementCollection key="one">I</elementCollection> 
+	<elementCollection key="two">2</elementCollection> 
+	<elementCollection key="two">II</elementCollection> 
+	<elementsCollection> 
+		<element key="three">3</element> 
+		<element key="three">III</element> 
+		<element key="four">4</element> 
+		<element key="four">IV</element> 
+	</elementsCollection> 
+</elementMap> 
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'elementMap'
+    },
+    value: {
+        element: {
+            'one': 'earth',
+                'two': 'wind'
+        },
+        elements: {
+            'three': 'fire',
+                'four': 'wood'
+        },
+        elementCollection: {
+            one: ['1', 'I'],
+            two: ['2', 'II']
+        },
+        elementsCollection: {
+            three: ['3', 'III'],
+            four: ['4', 'IV']
+        }
+    }
+}]]></ac:plain-text-body></ac:structured-macro>
+
+
+
+<p><a href="http://jsfiddle.net/lexi/8ak6g/">Fiddle</a>.</p>
+
+
+
+<h4>Element reference property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    type: 'elementRef',
+
+    // Name of the property, required
+    name: 'elementRef',
+
+    // Whether the property is collection or not, defaults to false
+    collection: false,
+
+    // Name of the element, optional, defaults to the name of the property, string or QName
+    elementName: 'myElementRef',
+
+    // Name of the wrapper element, defaults to null, string or QName
+    wrapperElementName: 'myElementRefs',
+
+    // Type of the property (can be simple or complex), required
+    typeInfo: 'String'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Element reference property maps a JavaScript object property onto XML element. This is similar to the <ac:link ac:anchor="Element property"><ac:link-body>element property</ac:link-body></ac:link>, however what's different is content representation in the JavaScript object. Consider the following properties:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'ElementRefType',
+        propertyInfos: [{
+            type: 'element',
+            name: 'a',
+            typeInfo: 'String'
+        }, {
+            type: 'elementRef',
+            name: 'b',
+            typeInfo: 'String'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'data',
+        typeInfo: 'MyModule.ElementRefType'
+    }, {
+        elementName: 'c',
+        substitutionHead: 'b',
+        typeInfo: 'String'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML elements for both properties is the same:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<data>
+  <a>1</a>
+  <b>2</b>
+</data>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>However, content representation in the JavaScript object is different:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: { localPart: 'data' },
+    value: {
+        a: '1',
+        b: {
+            name: { localPart: 'b' },
+            value: '2'
+        }
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>In the example above the element reference property <code>b</code> is represented in the JavaScript object by the following construct:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: { localPart: 'b' },
+    value: '2'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>The advantage of this representation is that you can choose the name of the XML element dynamically:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'data'
+    },
+    value: {
+        a: '1',
+        b: {
+            name: {
+                localPart: 'c'
+            },
+            value: '2'
+        }
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Despite property name is still <code>b</code>, it will be marshalled as the element <code>c</code>:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<data>
+  <a>1</a>
+  <c>2</c>
+</data>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Note that to do this trick we had to declare an element mapping for the element <code>c</code>:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+    elementInfos: [{
+        elementName: 'data',
+        typeInfo: 'MyModule.ElementRefType'
+    }, {
+        elementName: 'c',
+        typeInfo: 'String'
+    }]
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This lets Jsonix know that the element <code>c</code> can substitute the element <code>b</code> and it should be processed as <code>String</code>.</p>
+
+
+<p><a href="http://jsfiddle.net/lexi/Ms63w/">Fiddle</a>.</p>
+
+
+<h5>Scoped elements</h5>
+
+
+<p>There is one problem with element declaration above:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+    {
+        elementName: 'c',
+        typeInfo: 'String'
+    }
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This makes <code>c</code> a global element. So you can now unmarshal the following XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<c>3</c>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This may or may not be the desired effect. To overcome this difficulty, you can define a <em>scope</em> for this element declaration.<br />
+Scope is essentially a complex type which will limit the applicability of the given element declaration. In the example above, we can limit the scope of the element <code>c</code> to the enclosing type <code>MyModule.ElementRefType</code>:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+    {
+        elementName: 'c',
+        scope: 'MyModule.ElementRefType',
+        typeInfo: 'String'
+    }
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/xwDLp/">Fiddle</a>.</p>
+
+
+<h5>Substitution groups</h5>
+
+
+<p>You might have noticed that although marshalling </p>
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    name: { localPart: 'c' },
+    value: '2'
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>worked as expected, unmarshalling</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<data>
+    <a>1</a>
+    <c>2</c>
+</data>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>did not. The reason is that Jsonix sees the element <code>c</code> and can unmarshal it via the global element declaration, <em>but</em> it does not know which property it should be mapped to. Our complex type <code>MyModule.ElementRefType</code> only declares properties <code>a</code> and <code>b</code>.</p>
+
+
+<p>To fix this, we can provide the <code>substitutionHead</code> property in the element declaration. The <code>substitutionHead</code> name the element (either via string or QName) which can be <em>substituted</em> by the given element. For instance, if we can define the element declaration as follows:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+    {
+        elementName: 'c',
+        substitutionHead: 'b',
+        typeInfo: 'String'
+    }
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This will let Jsonix know that the element <code>c</code> substitutes the element <code>b</code>. And since our complex type <code>MyModule.ElementRefType</code> has an element reference property for the element <code>b</code>, Jsonix will know that the unmarshalled <code>c</code> should be assigned to the property <code>b</code>.</p>
+
+
+<p><a href="http://jsfiddle.net/lexi/2eMVD/">Fiddle</a>.</p>
+
+
+<h4>Element references property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    type: 'elementRefs',
+
+    // Name of the property, required
+    name: 'elementRefs',
+
+    // Whether the property is collection or not, defaults to false
+    collection: true,
+
+    // Name of the wrapper element, defaults to null, string or QName
+    wrapperElementName: 'myElementRefs',
+
+    // Element mappings, required
+    elementTypeInfos: [{
+        // Name of the element, required, string or QName
+        elementName: 'string',
+
+        // Type of the property, required
+        typeInfo: 'String'
+    }, {
+        elementName: 'integer',
+        typeInfo: 'Integer'
+    }]
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Element references property maps several XML elements onto one JavaScript object property. This is similar to <ac:link ac:anchor="Elements property"><ac:link-body>elements property</ac:link-body></ac:link>, but for <ac:link ac:anchor="Element reference property"><ac:link-body>references</ac:link-body></ac:link>.</p>
+
+
+<p>Example:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'ElementRefsType',
+        propertyInfos: [{
+            type: 'elementRefs',
+            name: 'data',
+            wrapperElementName: 'numbers',
+            collection: true,
+            elementTypeInfos: [{
+                elementName: 'long',
+                typeInfo: 'Long'
+            }, {
+                elementName: 'integer',
+                typeInfo: 'Integer'
+            }]
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'root',
+        typeInfo: 'MyModule.ElementRefsType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>XML:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <numbers>
+        <long>1</long>
+        <integer>2</integer>
+    </numbers>
+</root>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>JavaScript object:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        data: [{
+            name: {
+                localPart: 'long'
+            },
+            value: 1
+        }, {
+            name: {
+                localPart: 'integer'
+            },
+            value: 2
+        }]
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/JxuzL/">Fiddle</a>.</p>
+
+
+<h4>Any element property</h4>
+
+
+<p>Property declaration syntax:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    type: 'anyElement',
+
+    // Name of the property
+    name: "any",
+
+    // Whether the property is collection or not, defaults to false
+    collection: false,
+
+    // Whether the property allows DOM nodes, default to true
+    allowDom: true,
+
+    // Whether the property allows typed objects, default to true
+    allowTypedObject: true,
+
+    // If the property is a mixed property, default to true
+    mixed: true
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Any element property can handle arbitrary XML elements. Depending on the processing types and whether these elements are known within the current Jsonix context, you'll get objects, DOM nodes or strings on the JavaScript side.</p>
+
+
+<p>Any element property handles unmarshalling as follows:</p>
+
+<ul>
+	
+<li>When unmarshalling character data:
+	
+<ul>
+		
+<li>If this property is mixed, character data is unmarshalled as string.</li>
+		
+<li>Otherwise an error is reported.</li>
+	</ul>
+	</li>
+	
+<li>When unmarshalling an element:
+	
+<ul>
+		
+<li>If this property allows typed objects, check if this element is know to the context via <ac:link ac:anchor="Element mappings"><ac:link-body>element mapping</ac:link-body></ac:link>.
+		
+<ul>
+			
+<li>If it is known, unmarshal as typed object.</li>
+		</ul>
+		</li>
+		
+<li>Otherwise if this property allows DOM, simply return current element as a DOM element.</li>
+		
+<li>Otherwise report an error.</li>
+	</ul>
+	</li>
+</ul>
+
+
+
+<p>Below is the correspondence between <code>xs:any</code> processing types and <code>allowTypedObject</code>/<code>allowDom</code> processing settings.</p>
+
+
+<table>
+<tbody>
+
+<tr>
+
+<th>
+<p> Processing type </p></th>
+
+<th>
+<p> <code>allowTypedObject</code> </p></th>
+
+<th>
+<p> <code>allowDom</code> </p></th>
+</tr>
+
+<tr>
+
+<td>
+<p> lax              </p></td>
+
+<td>
+<p> <ac:emoticon ac:name="plus" />                   </p></td>
+
+<td>
+<p> <ac:emoticon ac:name="plus" />            </p></td>
+</tr>
+
+<tr>
+
+<td>
+<p> strict           </p></td>
+
+<td>
+<p> <ac:emoticon ac:name="plus" />                   </p></td>
+
+<td>
+<p> <ac:emoticon ac:name="minus" />            </p></td>
+</tr>
+
+<tr>
+
+<td>
+<p> skip             </p></td>
+
+<td>
+<p> <ac:emoticon ac:name="minus" />                   </p></td>
+
+<td>
+<p> <ac:emoticon ac:name="plus" />            </p></td>
+</tr>
+</tbody></table>
+
+
+
+<p>Usage constraints:</p>
+
+
+<ul>
+	
+<li>Complex type may declare at most one &quot;any element&quot; property.</li>
+</ul>
+
+
+
+<h5>Any element property example - lax processing</h5>
+
+
+<p>Consider the following mapping example:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+var MyModule = {
+    name: 'MyModule',
+    typeInfos: [{
+        type: 'classInfo',
+        localName: 'AnyElementType',
+        propertyInfos: [{
+            type: 'anyElement',
+            name: 'any',
+            collection: true
+        }]
+    }, {
+        type: 'classInfo',
+        localName: 'ValueType',
+        propertyInfos: [{
+            type: 'value',
+            typeInfo: 'Double',
+            name: 'data'
+        }]
+    }],
+    elementInfos: [{
+        elementName: 'root',
+        typeInfo: 'MyModule.AnyElementType'
+    }, {
+        elementName: 'string',
+        typeInfo: 'String'
+    }, {
+        elementName: 'value',
+        typeInfo: 'MyModule.ValueType'
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>The <code>allowsDom</code>, <code>allowsTypedObject</code> and <code>mixed</code> options are defaulted to <code>true</code>, so this property will produce:</p>
+
+<ul>
+	
+<li>typed objects for elements known in this context;</li>
+	
+<li>DOM nodes for elements which are not known to this context;</li>
+	
+<li>strings for character data.</li>
+</ul>
+
+
+
+<p>XML:</p>
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<root>
+    <string>one</string>
+    <value>2</value>
+    three
+    <node>4</node>
+</root>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Since we have declared global elements <code>string</code> and <code>value</code> in our module, these elements will be unmarshalled as typed objects. The element <code>node</code> is not known in this context - it will be returned as DOM. Character data <code>three</code> will be unmarshalled as string.</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        localPart: 'root'
+    },
+    value: {
+        any: [{
+            name: {
+                localPart: 'string'
+            },
+            value: 'one'
+        }, {
+            name: {
+                localPart: 'value'
+            },
+            value: {
+                data: 2,
+                TYPE_NAME: 'MyModule.ValueType'
+            }
+        },
+            'three',
+        // <node>4</node> as a DOM element
+        Jsonix.DOM.parse('<node>4</node>').documentElement]
+    }
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/F2Hj6/">Fiddle</a>.</p>
+</ac:confluence>

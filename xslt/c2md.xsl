@@ -85,8 +85,10 @@
 
   <xsl:template match="acxhtml:p">
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
+    <xsl:if test="not(ancestor::acxhtml:td or ancestor::acxhtml:th)">
+      <xsl:text>&#xa;</xsl:text>
+      <xsl:text>&#xa;</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="acxhtml:a">
@@ -182,6 +184,74 @@
 
   <xsl:template match="ri:page[@ri:content-title]" mode="link-target">
     <xsl:value-of select="@ri:content-title"/>
+  </xsl:template>
+
+  <xsl:template match="acxhtml:table">
+    <xsl:apply-templates/>
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="acxhtml:tr[acxhtml:th]">
+    <xsl:apply-templates/>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:apply-templates mode="header-dashes"/>
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="acxhtml:tr[acxhtml:td]">
+    <xsl:apply-templates/>
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="acxhtml:th">
+    <xsl:text>|</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:if test="not(following-sibling::acxhtml:th)">
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="acxhtml:th" mode="header-dashes">
+    <xsl:text>|</xsl:text>
+    <xsl:variable name="text">
+      <xsl:apply-templates/>
+    </xsl:variable>
+    <xsl:for-each select="1 to string-length($text)">
+      <xsl:text>-</xsl:text>
+    </xsl:for-each>
+    <xsl:if test="not(following-sibling::acxhtml:th)">
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+
+  <xsl:template match="acxhtml:td">
+    <xsl:text>|</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:if test="not(following-sibling::acxhtml:td)">
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+<ac:image><ri:attachment ri:filename="type-hierarchy.gif" /></ac:image>
+
+  <xsl:template match="ac:image">
+    <xsl:text>![]</xsl:text>
+    <xsl:text>(</xsl:text>
+    <xsl:apply-templates mode="link-target"/>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="ri:attachment" mode="link-target">
+    <xsl:value-of select="@ri:filename"/>
+  </xsl:template>
+
+  <xsl:template match="ac:emoticon[@ac:name='plus']">
+    <xsl:text>+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="ac:emoticon[@ac:name='minus']">
+    <xsl:text>-</xsl:text>
   </xsl:template>
 
 </xsl:stylesheet>

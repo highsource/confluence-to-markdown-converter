@@ -44,7 +44,7 @@ For backwards-compatibility, `name` property the module is technically not requi
 
 ### Type infos
 
-Each module may declare zero or more [types](#Types) using the `typeInfos` property.  
+Each module may declare zero or more [types](#types) using the `typeInfos` property.  
 
 Types are roughly equivalent to the global simple and complex types of the XML Schema.
 
@@ -76,11 +76,11 @@ var PO = {
 
 If type info is declared with a local name, it will get a "full" name based on the pattern `<ModuleName>.<LocalName>`, ex. `PO.PurchaseOrderType`.  
 
-See the [types](#Types) section for more information.
+See the [types](#types) section for more information.
 
 ### Element infos
 
-Each module may declare zero or more [element declarations](#Element declarations).  
+Each module may declare zero or more [element declarations](#element-declarations).  
 
 Element declarations are roughly equivalent to global elements of the XML Schema.
 
@@ -102,7 +102,7 @@ var PO = {
 
 The mapping above basicaly says that `<purchaseOrder .../>` element should be processed using the `PO.PurchaseOrderType` type and `<comment.../>` using the (built-in) string type.
 
-See the [element declarations](#Element declarations) section for more information.
+See the [element declarations](#element-declarations) section for more information.
 
 ### Default element and attribute namespaces
 

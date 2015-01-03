@@ -2,7 +2,7 @@
 
 A concept of *type* is a central concept in Jsonix mappings. Element declarations map XML elements onto types; most of the properties have a target type and so on.
 
-Jsonix distinguished two categories of types: [simple](#Simple types) and [complex](#Complex types) types. The difference between them is that complex types contain [properties](#Properties) whereas simple types don't.
+Jsonix distinguished two categories of types: [simple](#simple-types) and [complex](#complex-types) types. The difference between them is that complex types contain [properties](#properties) whereas simple types don't.
 
 Either way, types can convert between XML structures (elements, attributes, character data) and JavaScript structures (objects, arrays, strings, numbers etc.).
 
@@ -12,7 +12,7 @@ Each type *may* have a name which can be used to reference this type in mappings
 
 Simple types convert between character data on XML side and primitive or basic types on the JavaScript side. For instance, Jsonix boolean type converts between `"true"` or `"false"` text on XML side and `true` or `false` boolean values on JavaScript.
 
-Jsonix provides supports most simple types defined in the XML Schema [out of the box](#Build-in simple types). You can also define your own simple types using [derivation by list](#Deriving simple types by list), [by union](#Deriving simple types by union), defining [enumerations](#Enum types) or writing a [custom simple type](#Defining custom simple types).
+Jsonix provides supports most simple types defined in the XML Schema [out of the box](#build-in-simple-types). You can also define your own simple types using [derivation by list](#deriving-simple-types-by-list), [by union](#deriving-simple-types-by-union), defining [enumerations](#enum-types) or writing a [custom simple type](#defining-custom-simple-types).
 
 #### Built-in simple types
 
@@ -344,7 +344,7 @@ And the following JavaScript object:
 
 [Fiddle](http://jsfiddle.net/lexi/c6EsM/).
 
-See [#Properties](#Properties) for more information on defining properties.
+See [#Properties](#properties) for more information on defining properties.
 
 Properties declared in a complex type define both the structure of the JavaScript object as well as structure of the XML it will be mapped onto.
 

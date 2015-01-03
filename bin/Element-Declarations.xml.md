@@ -32,13 +32,13 @@ var MyModule = {
 
 The `name` property provides the name of the element to be mapped. This can be a qualified name defined by an object with properties `namespaceURI`, `localPart` (and maybe `prefix`) or a string. If name is given as a string, it will be resolved to the qualified name using the `defaultNamespaceURI` of the module.  
 
-See [defining element and attribute names](#Defining element and attribute names) for details about name resolution. (TODO)
+See [defining element and attribute names](#defining-element-and-attribute-names) for details about name resolution. (TODO)
 
 The `typeInfo` property defines the type which is associated with the given element. It can be a string (name of the type) or an object (full mapping of the type).  
 
-See [referencing types](#Referencing types) for more information about type resolution. (TODO)
+See [referencing types](#referencing-types) for more information about type resolution. (TODO)
 
-Element declaration has two more options, [`scope`](#Scoped elements) and [`substitutionHead`](#Substitution groups) which will be explained later on.
+Element declaration has two more options, [`scope`](#scoped-elements) and [`substitutionHead`](#substitution-groups) which will be explained later on.
 
 For example, consider the following element declaration:
 
@@ -77,5 +77,5 @@ Onto the type `MyModule.MyType`. So when Jsonix unmarshals such an element it wi
 
 You mostly need to declare only your global elements in `MyModule.elementInfos`. All other elements, attributes etc. mappings are done via properties.
 
-However, you may also need to use `MyModule.elementInfos` to declare [scoped elements](#Scoped elements).
+However, you may also need to use `MyModule.elementInfos` to declare [scoped elements](#scoped-elements).
 

@@ -6,23 +6,23 @@ Jsonix allows you to map character content, attributes and elements using follow
 
 * Character content
 	
-  * [#Value property](#Value property)
+  * [#Value property](#value-property)
 
 
 * Attributes
 	
-  * [#Attribute property](#Attribute property)
-  * [#Any attribute property](#Any attribute property)
+  * [#Attribute property](#attribute-property)
+  * [#Any attribute property](#any-attribute-property)
 
 
 * Elements
 	
-  * [#Element property](#Element property)
-  * [#Elements property](#Elements property)
-  * [#Element map property](#Element map property)
-  * [#Element reference property](#Element reference property)
-  * [#Element references property](#Element references property)
-  * [#Any element property](#Any element property)
+  * [#Element property](#element-property)
+  * [#Elements property](#elements-property)
+  * [#Element map property](#element-map-property)
+  * [#Element reference property](#element-reference-property)
+  * [#Element references property](#element-references-property)
+  * [#Any element property](#any-element-property)
 
 
 
@@ -76,13 +76,13 @@ We'll get the `data` property in the JavaScript object:
 
 [Fiddle](http://jsfiddle.net/lexi/593Je/).
 
-Name of the property is also used by [attribute](#Attribute property), [element](#Element property) and [element reference](#Element reference property) properties to default the target XML attribute or element names if they are omitted.
+Name of the property is also used by [attribute](#attribute-property), [element](#element-property) and [element reference](#element-reference-property) properties to default the target XML attribute or element names if they are omitted.
 
 #### Property cardinality
 
 Element properties also have the cardinality characteristic; they can be collection or single properties.
 
-[Value](#Value property), [attribute](#Attribute property) and [any attribute](#Any attribute property) properties are always single.
+[Value](#value-property), [attribute](#attribute-property) and [any attribute](#any-attribute-property) properties are always single.
 
 Collection properties handle repeatable elements.
 
@@ -117,7 +117,7 @@ Into the following JavaScript object:
 
 [Fiddle](http://jsfiddle.net/lexi/DT4Ne/).
 
-Note that this is different from [deriving types by list](#Deriving simple types by list):
+Note that this is different from [deriving types by list](#deriving-simple-types-by-list):
 
 ```
 <root>
@@ -127,7 +127,7 @@ Note that this is different from [deriving types by list](#Deriving simple types
 
 #### Mixed properties
 
-Some of the properties (namely [Element reference](#Element reference property)/[references](#Element references property) and [any element](#Any element property) properties) can be declared as *mixed*. Mixed properties can handle elements together with character content. Consider the following example:
+Some of the properties (namely [Element reference](#element-reference-property)/[references](#element-references-property) and [any element](#any-element-property) properties) can be declared as *mixed*. Mixed properties can handle elements together with character content. Consider the following example:
 
 ```
 var MyModule = {
@@ -300,20 +300,20 @@ JavaScript Object:
 Usage constraints:
 
 * Complex type can define at most one value property.
-* Value property can be used with [attribute](#Attribute property) or [any attribute](#Any attribute property) properties. It can not be used with:
+* Value property can be used with [attribute](#attribute-property) or [any attribute](#any-attribute-property) properties. It can not be used with:
 	
-  * [#Element property](#Element property)
-  * [#Elements property](#Elements property)
-  * [#Element reference property](#Element reference property)
-  * [#Element references property](#Element references property)
-  * [#Element references property](#Element references property)
-  * [#Mixed properties](#Mixed properties) without wrapper elements
+  * [#Element property](#element-property)
+  * [#Elements property](#elements-property)
+  * [#Element reference property](#element-reference-property)
+  * [#Element references property](#element-references-property)
+  * [#Element references property](#element-references-property)
+  * [#Mixed properties](#mixed-properties) without wrapper elements
 
 
 
 ##### Defining complex type with simple content
 
-The [value property](#Value property) can be used to define complex type with simple content. Consider the following XML Schema fragment:
+The [value property](#value-property) can be used to define complex type with simple content. Consider the following XML Schema fragment:
 
 ```
 <xs:element name="root">
@@ -520,14 +520,14 @@ Property declaration syntax:
 
 Element property maps a JavaScript object property onto the XML element.
 
-See [#Wrapper elements](#Wrapper elements) for an explanation of the `wrapperElementName` option.
+See [#Wrapper elements](#wrapper-elements) for an explanation of the `wrapperElementName` option.
 
 Usage constraints:
 
 * Element property can not be used with:
 	
-  * [Value properties](#Value property)
-  * [Mixed properties](#Mixed properties) without wrapper elements
+  * [Value properties](#value-property)
+  * [Mixed properties](#mixed-properties) without wrapper elements
 
 
 
@@ -883,7 +883,7 @@ Property declaration syntax:
 }
 ```
 
-Element reference property maps a JavaScript object property onto XML element. This is similar to the [element property](#Element property), however what's different is content representation in the JavaScript object. Consider the following properties:
+Element reference property maps a JavaScript object property onto XML element. This is similar to the [element property](#element-property), however what's different is content representation in the JavaScript object. Consider the following properties:
 
 ```
 var MyModule = {
@@ -1087,7 +1087,7 @@ Property declaration syntax:
 }
 ```
 
-Element references property maps several XML elements onto one JavaScript object property. This is similar to [elements property](#Elements property), but for [references](#Element reference property).
+Element references property maps several XML elements onto one JavaScript object property. This is similar to [elements property](#elements-property), but for [references](#element-reference-property).
 
 Example:
 
@@ -1191,7 +1191,7 @@ Any element property handles unmarshalling as follows:
 
 * When unmarshalling an element:
 	
-  * If this property allows typed objects, check if this element is know to the context via [element mapping](#Element mappings).
+  * If this property allows typed objects, check if this element is know to the context via [element mapping](#element-mappings).
 		
     * If it is known, unmarshal as typed object.
 

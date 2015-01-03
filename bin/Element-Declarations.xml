@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;\">
+<!ENTITY nbsp   "&#160;\">
+<!ENTITY ndash   "&#8211;\">
+<!ENTITY mdash   "&#8212;\">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h2>Element declarations</h2>
+
+
+<p>Every valid XML document has a single root element which is called the <em>document element</em>. When unmarshalling an XML document, Jsonix runtime needs to know onto which type does the root element of this document map. For instance that the element <code>value</code> maps onto the type <code>One.ValueType</code> in the module <code>One</code>.</p>
+
+
+<p>This mapping is defined by the <code>elementInfos</code> property of the module object. The <code>elementInfos</code> property is an array of element declarations. Each element declaration is an object with the following structure:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+var MyModule = {
+    // ...
+    elementInfos: [
+    // Element declaration syntax
+    {
+        // Qualified name of the element
+        name: {
+            namespaceURI: 'urn:myNamespaceURI',
+            localPart: 'element'
+        },
+        // Target type of the element
+        typeInfo: 'MyModule.MyType',
+        // Element scope (optional)
+        scope: 'MyModule.AnotherType',
+        // Substitution group (optional)
+        substitutionGroup: {
+            namespaceURI: 'urn:myNamespaceURI',
+            localPart: 'substitutableElement'
+        }
+    }]
+};
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p><a href="http://jsfiddle.net/lexi/jhz25/">Fiddle</a>.</p>
+
+
+<p>The <code>name</code> property provides the name of the element to be mapped. This can be a qualified name defined by an object with properties <code>namespaceURI</code>, <code>localPart</code> (and maybe <code>prefix</code>) or a string. If name is given as a string, it will be resolved to the qualified name using the <code>defaultNamespaceURI</code> of the module.<br />
+See <ac:link ac:anchor="Defining element and attribute names"><ac:link-body>defining element and attribute names</ac:link-body></ac:link> for details about name resolution. (TODO)</p>
+
+
+<p>The <code>typeInfo</code> property defines the type which is associated with the given element. It can be a string (name of the type) or an object (full mapping of the type).<br />
+See <ac:link ac:anchor="Referencing types"><ac:link-body>referencing types</ac:link-body></ac:link> for more information about type resolution. (TODO)</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Element declaration has two more options, <ac:link ac:anchor="Scoped elements"><ac:link-body><code>scope</code></ac:link-body></ac:link> and <ac:link ac:anchor="Substitution groups"><ac:link-body><code>substitutionHead</code></ac:link-body></ac:link> which will be explained later on.</p></ac:rich-text-body></ac:structured-macro>
+
+
+<p>For example, consider the following element declaration:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+{
+    name: {
+        namespaceURI: 'urn:myNamespaceURI',
+        localPart: 'element'
+    },
+    typeInfo: 'MyModule.MyType',
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This declaration maps the following element:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<my:element xmlns:my="urn:myNamespaceURI" ...>
+    ...
+</my:element>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>Onto the type <code>MyModule.MyType</code>. So when Jsonix unmarshals such an element it will produce a result like:</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[
+{
+    name: {
+        namespaceURI: 'urn:myNamespaceURI',
+        localPart: 'myLocalPart'
+    },
+    value: {
+        // Contents according to the MyModule.MyType  
+    },
+    TYPE_NAME : 'MyModule.MyType
+}
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>You mostly need to declare only your global elements in <code>MyModule.elementInfos</code>. All other elements, attributes etc. mappings are done via properties.</p>
+
+<ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>However, you may also need to use <code>MyModule.elementInfos</code> to declare <ac:link ac:anchor="Scoped elements"><ac:link-body>scoped elements</ac:link-body></ac:link>.</p></ac:rich-text-body></ac:structured-macro>
+
+</ac:confluence>

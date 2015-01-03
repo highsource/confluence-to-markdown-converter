@@ -19,7 +19,7 @@ if (window.ActiveXObject)
   xmlhttp = new ActiveXObject("MSXML2.XMLHTTP.6.0");
 else
   xmlhttp=new XMLHttpRequest();
-xmlhttp.open("GET", "confluence2wiki.xsl", false);
+xmlhttp.open("GET", "xslt/c2md.xsl", false);
 if (window.ActiveXObject)
 {
   xmlhttp.responseXML.async = false;
@@ -49,7 +49,7 @@ if (keyPressed==KEY_CODE_ENTER || keyPressed==KEY_CODE_PASTE) wikify();
 function wikify()
 {
 var strWrapperTop =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-  "<!DOCTYPE ac:confluence SYSTEM \"confluence-all.dtd\" [ " +
+  "<!DOCTYPE ac:confluence SYSTEM \"bin/confluence-all.dtd\" [ " +
   "<!ENTITY clubs    \"&#9827;\">" +
   "<!ENTITY nbsp   \"&#160;\">" +
   "<!ENTITY ndash   \"&#8211;\">" +

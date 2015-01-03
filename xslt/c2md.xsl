@@ -175,7 +175,7 @@
 
   <xsl:template match="ac:link[@ac:anchor]" mode="link-target">
     <xsl:text>#</xsl:text>
-    <xsl:value-of select="@ac:anchor"/>
+    <xsl:value-of select="translate(lower-case(@ac:anchor), ' ', '-')"/>
   </xsl:template>
 
   <xsl:template match="ac:link[ri:page]" mode="link-target">

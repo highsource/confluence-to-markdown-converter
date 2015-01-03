@@ -1,0 +1,1 @@
+* Bad links in Mapping-XML-to-JavaScript-Objects.xml.md

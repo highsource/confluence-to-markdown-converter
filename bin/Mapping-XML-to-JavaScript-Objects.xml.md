@@ -39,9 +39,9 @@ See the [Fiddle](http://jsfiddle.net/lexi/9yG7b/) for this example.
 
 Now we can enumerate basic components of Jsonix mappings:
 
-* [[#Modules]]
-* [[#Types]] and [[#Properties]]
-* [[#Element declarations]]
+* [](#Modules)
+* [](#Types) and [](#Properties)
+* [](#Element declarations)
 
 These components will be described in the following sections.
 

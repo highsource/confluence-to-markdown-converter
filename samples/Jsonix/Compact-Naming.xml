@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "../../dtd/confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;">
+<!ENTITY nbsp   "&#160;">
+<!ENTITY ndash   "&#8211;">
+<!ENTITY mdash   "&#8212;">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h2>Compact Naming</h2><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Supported by Jsonix since version 2.1.0 and Jsonix Schema Compiler from version 2.2.0.</p>
+<p>This feature is not backwards compatible - older Jsonix versions will not be able to read mappings with compact naming. However, newer version of Jsonix (2.1.0 and up) will stil read your &quot;normal&quot; (i.e. not compact) mappings. There are no plans to drop normal mappings.</p>
+<p>Jsonix Schema Compiler 2.2.0 and up generate normal mappings by default but have a switch to generate compact mappings instead.</p></ac:rich-text-body></ac:structured-macro>
+<p>In order to reduce the size of mapping scripts, Jsonix offers compact naming. You can just replace long property names in mappings with their short versions.</p>
+<p>Compact naming drastically reduces the size of the mapping files, you can expect 25-50% reduction in size.</p>
+<p>The following sections list compact names corresponding to the full names as well as their default values.</p>
+<h3>Module</h3>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th colspan="1">Description</th></tr>
+<tr>
+<td><code>name</code></td>
+<td><code>n</code></td>
+<td><code>null</code></td>
+<td colspan="1"><span>Name of the module</span></td></tr>
+<tr>
+<td><code>defaultElementNamespaceURI</code></td>
+<td><code>dens</code></td>
+<td><code>''</code></td>
+<td colspan="1"><span>Default namespace URI for elements</span></td></tr>
+<tr>
+<td><code>defaultAttributeNamespaceURI</code></td>
+<td><code>dans</code></td>
+<td><code>''</code></td>
+<td colspan="1"><span>Default namespace URI for attributes</span></td></tr>
+<tr>
+<td><code>typeInfos</code></td>
+<td><code>tis</code></td>
+<td><code>[]</code></td>
+<td colspan="1"><span>Type infos declared in the module</span></td></tr>
+<tr>
+<td><code>elementInfos</code></td>
+<td><code>eis</code></td>
+<td><code>[]</code></td>
+<td colspan="1"><span>Element infos declared in the module</span></td></tr></tbody></table>
+<h3>Element infos</h3>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>defaultElementNamespaceURI</code></td>
+<td><code>dens</code></td>
+<td><code><span>defaultElementNamespaceURI</span></code><span> </span>of the module</td>
+<td>Default namespace URI for elements</td></tr>
+<tr>
+<td><code>defaultAttributeNamespaceURI</code></td>
+<td><code>dans</code></td>
+<td><code><span>defaultAttributeNamespaceURI</span></code><span> </span><span>of</span> the module</td>
+<td>Default namespace URI for attributes</td></tr>
+<tr>
+<td><code>elementName</code></td>
+<td><code>en</code></td>
+<td></td>
+<td>Name of the element, may be string or a qualified name. If it is a string, the qualified name will be formed using the <span><code>defaultElementNamespaceURI</code></span></td></tr>
+<tr>
+<td><code>typeInfo</code></td>
+<td><code>ti</code></td>
+<td><code>'String'</code></td>
+<td>Type of the element</td></tr>
+<tr>
+<td><code>substitutionHead</code></td>
+<td><code>sh</code></td>
+<td><code>null</code></td>
+<td>Substitution head of the element</td></tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>sc</code></td>
+<td><code>null</code></td>
+<td>Scope of the element</td></tr></tbody></table>
+<h3>Type infos</h3>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>type</code></td>
+<td><code>t</code></td>
+<td><code>'classInfo'</code></td>
+<td>Type of the type info (ex. class, enum or list)</td></tr>
+<tr>
+<td><code>classInfo</code></td>
+<td><code>c</code></td>
+<td> </td>
+<td>Denotes a class type info</td></tr>
+<tr>
+<td><code>enumInfo</code></td>
+<td><code>enum</code></td>
+<td> </td>
+<td>Denotes a enum type info</td></tr>
+<tr>
+<td><code>list</code></td>
+<td><code><span>l</span></code></td>
+<td> </td>
+<td><span>Denotes a list type</span></td></tr>
+<tr>
+<td colspan="1"><code>localName</code></td>
+<td colspan="1"><code>ln</code></td>
+<td colspan="1"><code>null</code></td>
+<td colspan="1">Local name of the type within the module</td></tr>
+<tr>
+<td colspan="1"><code>name</code></td>
+<td colspan="1"><code>n</code></td>
+<td colspan="1"><code>moduleName + '.' + localName</code></td>
+<td colspan="1">Full name of the type</td></tr></tbody></table>
+<h4>List</h4>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code><span>baseTypeInfo</span></code></td>
+<td><code><span>bti</span></code></td>
+<td><code>'String'</code></td>
+<td>Type of the list items</td></tr>
+<tr>
+<td><code>separator</code></td>
+<td><code>s</code></td>
+<td><code>' '</code></td>
+<td>Separator of the list items</td></tr></tbody></table>
+<h4>Enum</h4>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>baseTypeInfo</code></td>
+<td><code>bti</code></td>
+<td><code>'String'</code></td>
+<td>Base type info of the enum</td></tr>
+<tr>
+<td><code>values</code></td>
+<td><code>vs</code></td>
+<td> </td>
+<td>Values of the enum</td></tr></tbody></table>
+<h4>Class</h4>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>defaultElementNamespaceURI</code></td>
+<td><code>dens</code></td>
+<td><code>defaultElementNamespaceURI</code> of the module</td>
+<td>Default namespace URI for elements</td></tr>
+<tr>
+<td><code>defaultAttributeNamespaceURI</code></td>
+<td><code>dans</code></td>
+<td><code>defaultAttributeNamespaceURI</code> of the module</td>
+<td>Default namespace URI for attributes</td></tr>
+<tr>
+<td><code>baseTypeInfo</code></td>
+<td><code>bti</code></td>
+<td><code>null</code></td>
+<td>Base type info (super-class)</td></tr>
+<tr>
+<td><code>instanceFactory</code></td>
+<td><code>inF</code></td>
+<td><code>null</code></td>
+<td>Instance factory - constructor function for instances of this class</td></tr>
+<tr>
+<td><code>properties</code></td>
+<td><code>ps</code></td>
+<td><code>[]</code></td>
+<td>Properties</td></tr></tbody></table>
+<h4>Properties</h4>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td colspan="1"><code>name</code></td>
+<td colspan="1"><code>n</code></td>
+<td colspan="1"> </td>
+<td colspan="1">Name of the property</td></tr>
+<tr>
+<td colspan="1"><code>defaultElementNamespaceURI</code></td>
+<td colspan="1"><code>dens</code></td>
+<td colspan="1"><code>defaultElementNamespaceURI</code> of the class</td>
+<td colspan="1">Default namespace URI for elements</td></tr>
+<tr>
+<td colspan="1"><code>defaultAttributeNamespaceURI</code></td>
+<td colspan="1"><code>dans</code></td>
+<td colspan="1"><code>defaultAttributeNamespaceURI</code> of the class</td>
+<td colspan="1">Default namespace URI for attributes</td></tr>
+<tr>
+<td colspan="1"><code>collection</code></td>
+<td colspan="1"><code>col</code></td>
+<td colspan="1"><code>false</code></td>
+<td colspan="1">Whether this is a collection property</td></tr>
+<tr>
+<td colspan="1"><code>type</code></td>
+<td colspan="1"><code>t</code></td>
+<td colspan="1"><code>'element'</code></td>
+<td colspan="1">Property type</td></tr></tbody></table>
+<p>Mapping properties above apply to all properties.</p>
+<h5>Property types</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>anyAttribute</code></td>
+<td><code>aa</code></td>
+<td> </td>
+<td>Any attribute property</td></tr>
+<tr>
+<td><code>anyElement</code></td>
+<td><code>ae</code></td>
+<td> </td>
+<td>Any element property</td></tr>
+<tr>
+<td><code>attribute</code></td>
+<td><code>a</code></td>
+<td> </td>
+<td>Attribute property</td></tr>
+<tr>
+<td><code>elementMap</code></td>
+<td><code>em</code></td>
+<td> </td>
+<td>Element map property</td></tr>
+<tr>
+<td colspan="1"><code>element</code></td>
+<td colspan="1"><code>e</code></td>
+<td colspan="1"> </td>
+<td colspan="1">Element property</td></tr>
+<tr>
+<td colspan="1"><code>elements</code></td>
+<td colspan="1"><code>es</code></td>
+<td colspan="1"> </td>
+<td colspan="1">Elements property</td></tr>
+<tr>
+<td colspan="1"><code>elementRef</code></td>
+<td colspan="1"><code>er</code></td>
+<td colspan="1"> </td>
+<td colspan="1">Element reference property</td></tr>
+<tr>
+<td colspan="1"><code>elementRefs</code></td>
+<td colspan="1"><code>ers</code></td>
+<td colspan="1"> </td>
+<td colspan="1">Element references property</td></tr>
+<tr>
+<td colspan="1"><code>value</code></td>
+<td colspan="1"><code>v</code></td>
+<td colspan="1"> </td>
+<td colspan="1">Value property</td></tr></tbody></table>
+<h5><span style="color: rgb(112,112,112);">Any attribute property</span></h5>
+<p>Any attribute property does not have any additional mapping parameters.</p>
+<h5>Any element property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>allowDom</code></td>
+<td><code>dom</code></td>
+<td><code>true</code></td>
+<td>Whether DOM elements are allowed as-is in case they are not known in this context and can't be unmarshalled</td></tr>
+<tr>
+<td><code>allowTypedObject</code></td>
+<td><code>typed</code></td>
+<td><code>true</code></td>
+<td>Whether typed objects are allowed (not just DOM elements)</td></tr>
+<tr>
+<td><code>mixed</code></td>
+<td><code>mx</code></td>
+<td><code>true</code></td>
+<td>If mixed content allowed (strings together with DOM elements or typed objects)</td></tr></tbody></table>
+<h5>Attribute property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>attributeName</code></td>
+<td><code>an</code></td>
+<td><code>name</code> of the property</td>
+<td>Name of the attribute - qualified name or just string. Strings will be qualified using the <code><span>defaultAttributeNamespaceURI</span></code></td></tr>
+<tr>
+<td colspan="1"><code>typeInfo</code></td>
+<td colspan="1"><code>ti</code></td>
+<td colspan="1"><code>'String'</code></td>
+<td colspan="1">Attribute's type</td></tr></tbody></table>
+<h5>Element map property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>elementName</code></td>
+<td><code>en</code></td>
+<td><code>name</code> of the property</td>
+<td><span>Name of the element - qualified name or just string. Strings will be qualified using the </span><code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td colspan="1"><code>wrapperElementName</code></td>
+<td colspan="1"><code>wen</code></td>
+<td colspan="1">null</td>
+<td colspan="1">Name of the wraper element <span>- qualified name or just string. Strings will be qualified using the </span><code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>key</code></td>
+<td><code>k</code></td>
+<td> </td>
+<td>Key property</td></tr>
+<tr>
+<td><code>value</code></td>
+<td><code>v</code></td>
+<td> </td>
+<td>Value property</td></tr></tbody></table>
+<h5>Element property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>elementName</code></td>
+<td><code>en</code></td>
+<td><code>name</code> of the property</td>
+<td>Name of the element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>wrapperElementName</code></td>
+<td><code>wen</code></td>
+<td>null</td>
+<td>Name of the wraper element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>typeInfo</code></td>
+<td><code>ti</code></td>
+<td><code>'String'</code></td>
+<td>Element's type</td></tr></tbody></table>
+<h5>Elements property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>wrapperElementName</code></td>
+<td><code>wen</code></td>
+<td><code>null</code></td>
+<td>Name of the wraper element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>elementTypeInfos</code></td>
+<td><code>etis</code></td>
+<td><code>[]</code></td>
+<td>Element type infos of this property</td></tr></tbody></table>
+<h6>Elements property - element type infos</h6>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>elementName</code></td>
+<td><code>en</code></td>
+<td> </td>
+<td><span>Name of the element - qualified name or just string. Strings will be qualified using the </span><code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>typeInfo</code></td>
+<td><code>ti</code></td>
+<td><code>'String'</code></td>
+<td>Type info of the element</td></tr></tbody></table>
+<h5><span style="color: rgb(112,112,112);">Element reference property</span></h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td colspan="1"><code>elementName</code></td>
+<td colspan="1"><code>en</code></td>
+<td colspan="1"><code>name</code> of the property</td>
+<td colspan="1">Name of the element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>wrapperElementName</code></td>
+<td><code>wen</code></td>
+<td><code>null</code></td>
+<td>Name of the wrapper element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td colspan="1">mixed</td>
+<td colspan="1">mx</td>
+<td colspan="1">true</td>
+<td colspan="1">If this property allows mixed content</td></tr></tbody></table>
+<h5>Element references property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>wrapperElementName</code></td>
+<td><code>wen</code></td>
+<td><code>null</code></td>
+<td>Name of the wrapper element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td colspan="1"><code>mixed</code></td>
+<td colspan="1"><code>mx</code></td>
+<td colspan="1"><code>true</code></td>
+<td colspan="1">If this property allows mixed content</td></tr>
+<tr>
+<td><code>elementTypeInfos</code></td>
+<td><code>etis</code></td>
+<td><code>[]</code></td>
+<td>Element type infos of this property</td></tr></tbody></table>
+<h6>Element references property - element type infos</h6>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>elementName</code></td>
+<td><code>en</code></td>
+<td> </td>
+<td>Name of the element - qualified name or just string. Strings will be qualified using the <code>defaultElementNamespaceURI</code></td></tr>
+<tr>
+<td><code>typeInfo</code></td>
+<td><code>ti</code></td>
+<td><code>'String'</code></td>
+<td>Type info of the element</td></tr></tbody></table>
+<h5>Value property</h5>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code><span>typeInfo</span></code></td>
+<td><code><span>ti</span></code></td>
+<td><code><span>'String'</span></code></td>
+<td><span>Type info of the value</span></td></tr></tbody></table>
+<h3>Qualified names</h3>
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Compact name</th>
+<th>Default value</th>
+<th>Description</th></tr>
+<tr>
+<td><code>localPart</code></td>
+<td><code>lp</code></td>
+<td> </td>
+<td>Local part</td></tr>
+<tr>
+<td><code>namespaceURI</code></td>
+<td><code>ns</code></td>
+<td><code>''</code></td>
+<td>Namespace URI</td></tr>
+<tr>
+<td><code>prefix</code></td>
+<td><code>p</code></td>
+<td><code>''</code></td>
+<td>Prefix</td></tr></tbody></table>
+<h3>Type names</h3><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Since Jsonix version 2.1.0.</p></ac:rich-text-body></ac:structured-macro>
+<p>When referencing types within the same module, you can use the compact syntax <code>.MyType</code> instead of the full name <code>MyModule.MyType</code>.</p>
+<p>Example:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[Five = {
+	n : 'Five',
+	tis : [ {
+		ln : 'ValueType',
+		ps : [ {
+			t : 'v',
+			n : 'value'
+		} ]
+	}, {
+		ln : 'ElementsType',
+		ps : [ {
+			t : 'es',
+			n : 'ab',
+			etis : [ {
+				en : 'a',
+				// We can use .ValueType instead of Five.ValueType
+				ti : '.ValueType'
+			}, {
+				en : 'b',
+				ti : 'Integer'
+			} ]
+		} /*...*/ ],
+	} ],
+	eis : [ /* ... */ ]
+};]]></ac:plain-text-body></ac:structured-macro>
+</ac:confluence>

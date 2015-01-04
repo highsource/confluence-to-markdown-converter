@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ac:confluence SYSTEM "../../dtd/confluence-all.dtd" [
-<!ENTITY clubs    "&#9827;\">
-<!ENTITY nbsp   "&#160;\">
-<!ENTITY ndash   "&#8211;\">
-<!ENTITY mdash   "&#8212;\">
+<!ENTITY clubs    "&#9827;">
+<!ENTITY nbsp   "&#160;">
+<!ENTITY ndash   "&#8211;">
+<!ENTITY mdash   "&#8212;">
 ]>
 <ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
 

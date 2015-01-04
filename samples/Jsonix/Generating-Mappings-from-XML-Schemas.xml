@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "../../dtd/confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;">
+<!ENTITY nbsp   "&#160;">
+<!ENTITY ndash   "&#8211;">
+<!ENTITY mdash   "&#8212;">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+
+<h1>Generating mappings from XML Schema</h1>
+
+<ac:structured-macro ac:name="note"><ac:rich-text-body>
+<p>You need a Java environment to generate mappings from XML Schemata.</p></ac:rich-text-body></ac:structured-macro>
+
+
+<h2>Command-line tool</h2>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[java
+  -jar jsonix-full-<VERSION>.jar // Run executable Java archieve
+  -d src/main/webapp/js // Target directory
+  src/main/resources/purchaseorder.xsd // Schema
+  -b src/main/resources/bindings.xjb // Bindings]]></ac:plain-text-body></ac:structured-macro>
+
+
+<h2>XJC plugin</h2>
+
+
+<p>If you're already using XJC to compile your schemas, you'll just need to use the <code>jsonix</code> plugin for XJC. The plugin can be downloaded <ac:link><ri:page ri:content-title="Downloads" /><ac:link-body>here</ac:link-body></ac:link>. It is activated using the following command-line option:</p>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+-Xjsonix
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<h3>Maven usage</h3>
+
+
+<ul>
+	
+<li>Set <code>extension=true</code></li>
+	
+<li>Add <code>-Xjsonix</code> to <code>args/arg</code></li>
+</ul>
+
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<plugin>                                                                       
+	<groupId>org.jvnet.jaxb2.maven2</groupId>                              
+	<artifactId>maven-jaxb2-plugin</artifactId>                            
+	<configuration>                                                        
+		<extension>true</extension>                                    
+		<args>                                                         
+			<arg>-Xjsonix</arg>                                    
+		</args>                                                        
+		<plugins>                                                      
+			<plugin>                                               
+				<groupId>org.hisrc.jsonix</groupId>            
+				<artifactId>jsonix-schema-compiler</artifactId>
+				<version><VERSION></version>          
+			</plugin>                                              
+		</plugins>                                                     
+	</configuration>                                                       
+</plugin>                                                                      
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<h3>Ant usage</h3>
+
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[
+<xjc destdir="${basedir}/target/generated-sources/xjc" extension="true">
+	<binding dir="${basedir}/src/main/resources">
+	 	<include name="**/*.xjb"/>
+	</binding>
+	<schema dir="${basedir}/src/main/resources">
+	 	<include name="**/*.xsd"/>
+	</schema>
+	<!-- Plugins -->
+	<classpath>
+		<fileset dir="${basedir}/lib">
+			<include name="jsonix-<VERSION>.jar"/>
+		</fileset>
+	</classpath>
+	<arg line="-Xjsonix"/>
+</xjc>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<h2>Bindings files</h2>
+
+
+<p>Now you may wonder, what the bindings file does. Bindings customize schema compilation. For instance, you can instruct Jsonix schema compiler to generate the <code>PO</code> module (by default written to the <code>PO.js</code> file).</p>
+
+
+<p>Here's how a typical bindings file looks like.</p>
+
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+	version="2.1"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:jsonix="http://jsonix.highsource.org/customizations"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+
+	jaxb:extensionBindingPrefixes="jsonix">
+
+	<jaxb:bindings schemaLocation="purchaseorder.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="org.hisrc.jsonix.demos.po"/>
+		</jaxb:schemaBindings>
+
+		<jsonix:packageMapping
+			packageName="org.hisrc.jsonix.demos.po"
+			spaceName="PO"/>
+		
+	</jaxb:bindings>
+
+</jaxb:bindings>
+]]></ac:plain-text-body></ac:structured-macro>
+
+
+<p>This bindings file basically says two things:</p>
+
+<ul>
+	
+<li>The <code>purchaseorder.xsd</code> schema will get the package <code>org.hisrc.jsonix.demos.po</code></li>
+	
+<li>The package <code>org.hisrc.jsonix.demos.po</code> will have the associated space name (module) <code>PO</code></li>
+</ul>
+
+<p>This might look a bit cumbersome, but this is due to certain limitations in the underlying technologies.</p>
+
+<h2>Using command-line tool in node.js</h2>
+<p>Add schema generation as a <code>preinstall</code> script.</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="title">package.json</ac:parameter><ac:plain-text-body><![CDATA[{
+	...,
+
+	"dependencies": {
+		"jsonix": "~<VERSION>"
+	},
+	"scripts": {
+		"preinstall" : "java 
+-jar node_modules/jsonix/lib/jsonix-schema-compiler-full.jar 
+-d mappings purchaseorder.xsd -b bindings.xjb"
+	}
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<p>(Line breaks are added for readablility.)</p>
+<h2>Generating compact mappings</h2><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Generation of the compact mappings is an experimental feature. While compact naming is stable and ready to use, the way you tell the Jsonix Schema Compiler to generate compact mappings may change in the future. Please be warned that you may need to update your generation scripts then.</p></ac:rich-text-body></ac:structured-macro><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Since Jsonix Schema Compiler version 2.2.0.</p></ac:rich-text-body></ac:structured-macro>
+<p>You can generate compact mappings using the following additional switch:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[-Xjsonix-compact]]></ac:plain-text-body></ac:structured-macro>
+</ac:confluence>

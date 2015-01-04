@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ac:confluence SYSTEM "../../dtd/confluence-all.dtd" [
+<!ENTITY clubs    "&#9827;">
+<!ENTITY nbsp   "&#160;">
+<!ENTITY ndash   "&#8211;">
+<!ENTITY mdash   "&#8212;">
+]>
+<ac:confluence xmlns:ac="http://www.atlassian.com/schema/confluence/4/ac/" xmlns:ri="http://www.atlassian.com/schema/confluence/4/ri/" xmlns="http://www.atlassian.com/schema/confluence/4/">
+
+<h1>Using Jsonix in your JavaScript program</h1>
+<ul>
+<li><ac:link><ri:page ri:content-title="Downloads" /><ac:plain-text-link-body><![CDATA[Download]]></ac:plain-text-link-body></ac:link> Jsonix or <a href="https://npmjs.org/package/xmldom">install</a> it with npm in node.js</li>
+<li>Add/import/include/require Jsonix scripts into your program/page.</li>
+<li><ac:link><ri:page ri:content-title="Mapping XML to JavaScript Objects" /><ac:plain-text-link-body><![CDATA[Write]]></ac:plain-text-link-body></ac:link> or <ac:link><ri:page ri:content-title="Generating mappings from XML Schema" /><ac:plain-text-link-body><![CDATA[generate]]></ac:plain-text-link-body></ac:link> Jsonix mappings.</li>
+<li>Create Jsonix context from these mappings.
+<ul>
+<li>To marshal (serialize JavaScript objects as XML):
+<ul>
+<li>Create marshaller.</li>
+<li>Use <code>marshalString</code>, <code>marshalDocument</code> etc. methods of marshaller.</li></ul></li>
+<li>To unmarshal (parse JavaScript objects from XML):
+<ul>
+<li>Create unmarshaller.</li>
+<li>Use <code>unmarshalString</code>, <code>unmarshalDocument</code>, <code>unmarshalURL</code> etc. methods of unmarshaller.</li></ul></li></ul></li></ul>
+<h2>Including Jsonix scripts in a web page</h2>
+<p>In production you'll normally want to use the minified version of Jsonix:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[<html>
+	<head>
+		<script type="text/javascript" src="../js/Jsonix/Jsonix-min.js"></script>
+		<!-- ... --> 
+	</head> 
+	<!-- ... --> 
+</html>
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Available versions:</p>
+<ul>
+<li><code>Jsonix-min.js</code> - aggregated, minified version.</li>
+<li><code>Jsonix-all.js</code> - aggregated, not minified version.</li>
+<li><code>lib/Jsonix.js</code> - not aggregated, not minified development version.</li></ul>
+<h3>Using Jsonix with RequireJS</h3>
+<p>Since 2.0.11.</p>
+<p>Jsonix is compatible with <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">AMD</a>/<a href="http://requirejs.org/">RequireJS</a>.</p>
+<p>Include <code>require.js</code> in your page, point <code>data-main</code> to your main script file:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="language">xml</ac:parameter><ac:plain-text-body><![CDATA[<script type="text/javascript" src="js/require.js" data-main="js/main.js"></script> ]]></ac:plain-text-body></ac:structured-macro>
+<p>In your scripts, define Jsonix and mappings as dependencies of your module. The code below assumes <code>Jsonix-all.js</code> and <code>PO.js</code> are placed next to <code>main.js</code> and <code>require.js</code> in the <code>js</code> folder.</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="language">js</ac:parameter><ac:plain-text-body><![CDATA[define([ "Jsonix-all", "PO" ], function(JsonixModule, POModule) {
+	var Jsonix = JsonixModule.Jsonix;
+	var PO = POModule.PO;
+
+
+	// Create Jsonix context
+	var context = new Jsonix.Context([ PO ]);
+	// Create unmarshaller
+	var unmarshaller = context.createUnmarshaller();
+	// ...
+});]]></ac:plain-text-body></ac:structured-macro>
+<p>Note that Jsonix still works in node.js and in browser without RequireJS.</p>
+<h2>Installing Jsonix in node.js</h2>
+<p>Install:</p><ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[npm install jsonix
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Or add to dependencies of your package:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="title">package.js</ac:parameter><ac:plain-text-body><![CDATA[{
+	"name": "mypackage",
+	// ...
+	"dependencies": {
+		"jsonix": "~<VERSION>",
+		// ...
+	}
+}
+]]></ac:plain-text-body></ac:structured-macro>
+<h2>Using Jsonix</h2>
+<h3>Creating Jsonix Context</h3>
+<p>In order to marshal or unmarshal you'll first need to create Jsonix context:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var context = new Jsonix.Context(
+	// Array of mapping modules
+	[ MyMappings1, MyMappings2 ],
+	// Optional properties
+	{
+		// Default namespace/prefix mappings (optional)
+		namespacePrefixes : {
+			'http://acme.com/foo' : 'foo',
+			'http://acme.com/bar' : 'bar'
+		}
+	}
+);
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Jsonix context is a factory which produces marshallers or unmarshallers. Jsonix context is thread-safe and reusable.</p>
+<p>Once Jsonix context is created you can use it to produce marshallers or unmarshallers:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">javascript</ac:parameter><ac:plain-text-body><![CDATA[var marshaller = context.createMarshaller();
+var unmarshaller = context.createUnmarshaller();
+]]></ac:plain-text-body></ac:structured-macro>
+<p>Unlike the context itself, marshaller and unmarshallers <em>neither</em> thread-safe <em>nor</em> reusable.</p>
+<h4>Additional context options</h4>
+<h5>Namespace prefixes</h5>
+<p><code>namespacePrefixes</code> is a map of namespace/prefix pairs. During marshalling they will be eagerly declared on the root element and then used to determine prefix for qualified element names (if the name itself does not provide one).</p>
+<h3>Marshalling</h3>
+<p>Once you have a marshaller, you can marshal your object as XML:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[// Marshal as string
+var objectAsXMLString = marshaller.marshalString(myObject);
+// Marshal as document
+var objectAsXMLDocument = marshaller.marshalDocument(myObject);
+]]></ac:plain-text-body></ac:structured-macro>
+<h3>Unmarshalling</h3>
+<p>Unmarshaller can parse your object from XML:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[// Unmarshal from string
+var objectFromXMLString = unmarshaller.unmarshalString(myString);
+// Unmarshal from document
+var objectFromXMLDocument = unmarshaller.unmarshalDocument(myDocument);
+// Unmarshal from URL via AJAX
+unmarshaller.unmarshalURL(myURL,
+	function (data)	{
+		var objectFromURL = data;
+	});
+]]></ac:plain-text-body></ac:structured-macro>
+<h4>Unmarshalling a file with node.js</h4><ac:structured-macro ac:name="tip"><ac:rich-text-body>
+<p>Since 2.0</p></ac:rich-text-body></ac:structured-macro>
+<p>If you're running Jsonix in a <a href="http://nodejs.org/">node.js</a> environment, you can also unmarshal from a file:</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="">xml</ac:parameter><ac:plain-text-body><![CDATA[// Unmarshal from file via node.js file system API
+unmarshaller.unmarshalFile(fileName,
+	function (data)	{
+		var objectFromFile = data;
+	},
+        options);
+]]></ac:plain-text-body></ac:structured-macro>
+<p>At the moment, the file will be loaded as a string, then parsed into DOM document and finally unmarshalled from the parsed document.</p>
+<p>The optional argument <code>options</code> is passed directly to the <code>fs.readFile(...)</code> call. See <a href="http://nodejs.org/api/fs.html">node.js FileSystem API</a>.</p>
+</ac:confluence>

@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -6,30 +5,16 @@
 <link href="../favicon.ico" rel="shortcut icon"/>
 <title>Wikifier - Convert Confluence XML to wiki markup</title>
 
+<script type="text/javascript" src="js/SaxonCE/Saxonce.nocache.js"></script>
+<script type="text/javascript" src="js/C2MD/C2MD.js"></script>
+<script type="text/javascript">
+  var onSaxonLoad = function() { C2MD.initialize(); };
+</script>
+
 <script type="text/javascript">
 // <![CDATA[
-if (window.ActiveXObject) {
-  var xsl = new ActiveXObject("MSXML2.DOMDocument.6.0");
-  xsl.preserveWhiteSpace = true;
-}
-
 function initialize()
 {
-if (window.ActiveXObject)
-  xmlhttp = new ActiveXObject("MSXML2.XMLHTTP.6.0");
-else
-  xmlhttp=new XMLHttpRequest();
-xmlhttp.open("GET", "c2md.xsl", false);
-if (window.ActiveXObject)
-{
-  xmlhttp.responseXML.async = false;
-  xmlhttp.responseXML.resolveExternals = true;
-  xmlhttp.responseXML.validateOnParse = false;
-  xmlhttp.responseXML.preserveWhiteSpace = true;
-}
-xmlhttp.send();
-xsl = xmlhttp.responseXML;
-
 wikify();
 }
 
@@ -48,87 +33,14 @@ if (keyPressed==KEY_CODE_ENTER || keyPressed==KEY_CODE_PASTE) wikify();
 
 function wikify()
 {
-var strWrapperTop =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-  "<!DOCTYPE ac:confluence SYSTEM \"confluence-all.dtd\" [ " +
-  "<!ENTITY clubs    \"&#9827;\">" +
-  "<!ENTITY nbsp   \"&#160;\">" +
-  "<!ENTITY ndash   \"&#8211;\">" +
-  "<!ENTITY mdash   \"&#8212;\">" +
-  " ]>" +
-  "<ac:confluence xmlns:ac=\"http://www.atlassian.com/schema/confluence/4/ac/\" xmlns:ri=\"http://www.atlassian.com/schema/confluence/4/ri/\" xmlns=\"http://www.atlassian.com/schema/confluence/4/\">";
-var strWrapperBottom = "</ac:confluence>";
-
-var strConfluenceXMLDoc = strWrapperTop + document.getElementById("confluencexml").value + strWrapperBottom;
-
-if (window.ActiveXObject)
-{
-  // Creating the new empty DOM tree:
-  var xml = new ActiveXObject("MSXML2.DOMDocument.6.0");
-  // No asynchronous load:
-  xml.async = false;
-  xml.preserveWhiteSpace = true;
-  xml.resolveExternals = true;
-  xml.setProperty("ProhibitDTD", false);
-  xml.loadXML(strConfluenceXMLDoc);
-  if (xml.parseError.errorCode == 0)
-  {
-    with (document.getElementById("wikimarkup"))
-    {
-      className = "";
-    }
-  } else
-  {
-    var errorPossibleFix = "";
-    if (xml.parseError.errorCode == -1072896763)
-    {
-      errorPossibleFix = "Check that your XML source is well-formed (no missing end tags).\n"
-    }
-    with (document.getElementById("wikimarkup"))
-    {
-      className = "error";
-      value = xml.parseError.reason + errorPossibleFix + "\nError code: " + xml.parseError.errorCode;
-    }
-    return;
-  }
-  var strWikiMarkup = xml.transformNode(xsl.documentElement);
-} else if (document.implementation && document.implementation.createDocument) {
-  var strError = "";
-  var parser = new DOMParser();
-  var xml = parser.parseFromString(strConfluenceXMLDoc, "application/xml");
-  if (xml.documentElement.nodeName=="parsererror")
-  {
-    var strError=xml.documentElement.childNodes[0].nodeValue;
-    with (document.getElementById("wikimarkup"))
-    {
-      className = "error";
-      value = strError;
-    }
-    return;
-  } else {
-    var errors = xml.getElementsByTagName("parsererror");
-    if (errors.length > 0)
-    {
-      with (document.getElementById("wikimarkup"))
-      {
-        className = "error";
-        value = errors[0].textContent + "\n(No there isn't. Fix the error!)"
-      }
-      return;
-    }
-  }
-  with (document.getElementById("wikimarkup"))
-  {
-    className = "";
-  }
-  xsltProcessor= new XSLTProcessor();
-  xsltProcessor.importStylesheet(xsl);
-  strWikiMarkup = xsltProcessor.transformToFragment(xml,document).textContent;
-}
-document.getElementById("wikimarkup").value = strWikiMarkup;
+  var confluenceStorageFormatString = document.getElementById("confluencexml").value;
+  var markdownString = C2MD.transformConfluenceStorageFormatStringToMarkdownString(document, confluenceStorageFormatString);
+  document.getElementById("wikimarkup").value = markdownString;
 }
 // ]]>
 </script>
 </head>
+
 <body onload="initialize()">
 
 <p>WORK IN PROGRESS</p>
@@ -137,7 +49,7 @@ document.getElementById("wikimarkup").value = strWikiMarkup;
 
 <hr/>
 
-<textarea id="confluencexml" rows="25" cols="120" onkeyup="keyup(event)">&lt;h1&gt;Wikifier&lt;/h1&gt;
+<textarea id="confluencexml" rows="25" cols="120" onkeyup="keyup(event);">&lt;h1&gt;Wikifier&lt;/h1&gt;
 &lt;p&gt;Paste your Confluence XML under the "Confluence XML" heading.&lt;/p&gt;
 &lt;p&gt;You can edit the XML, and then press Enter to refresh the wikified view.&lt;/p&gt;
 </textarea>

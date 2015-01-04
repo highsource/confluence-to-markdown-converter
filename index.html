@@ -7,9 +7,6 @@
 
 <script type="text/javascript" src="js/SaxonCE/Saxonce.nocache.js"></script>
 <script type="text/javascript" src="js/C2MD/C2MD.js"></script>
-<script type="text/javascript">
-  var onSaxonLoad = function() { C2MD.initialize(); };
-</script>
 
 <script type="text/javascript">
 // <![CDATA[
@@ -39,9 +36,18 @@ function wikify()
 }
 // ]]>
 </script>
+<script type="text/javascript">
+// <![CDATA[
+	var onSaxonLoad = function() {
+		C2MD.initialize();
+		initialize();
+	};
+// ]]>
+</script>
+
 </head>
 
-<body onload="initialize()">
+<body>
 
 <p>WORK IN PROGRESS</p>
 

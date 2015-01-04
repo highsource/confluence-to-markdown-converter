@@ -150,36 +150,35 @@
 
   <xsl:template match="ac:structured-macro/ac:parameter"/>
 
-  <xsl:template match="ac:link[ri:page and not(ac:link-body)]">
+  <xsl:template match="ac:link[ri:*]">
     <xsl:text>[[</xsl:text>
-    <xsl:apply-templates select="." mode="link-target"/>
+    <xsl:if test="ac:link-body or ac:plain-text-link-body">
+      <xsl:apply-templates select="ac:link-body | ac:plain-text-link-body"/>
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates select="ri:*" mode="link-target"/>
+    <xsl:if test="@ac:anchor">
+      <xsl:text>#</xsl:text>
+      <xsl:value-of select="translate(lower-case(@ac:anchor), ' ', '-')"/>
+    </xsl:if>
     <xsl:text>]]</xsl:text>
   </xsl:template>
 
-  <xsl:template match="ac:link[ri:page and ac:link-body]">
-    <xsl:text>[[</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>|</xsl:text>
-    <xsl:apply-templates select="." mode="link-target"/>
-    <xsl:text>]]</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="ac:link">
+  <xsl:template match="ac:link[not(ri:*) and @ac:anchor]">
     <xsl:text>[</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:choose>
+      <xsl:when test="ac:link-body or ac:plain-text-link-body">
+        <xsl:apply-templates select="ac:link-body | ac:plain-text-link-body"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@ac:anchor"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>]</xsl:text>
     <xsl:text>(</xsl:text>
-    <xsl:apply-templates select="." mode="link-target"/>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="ac:link[@ac:anchor]" mode="link-target">
     <xsl:text>#</xsl:text>
     <xsl:value-of select="translate(lower-case(@ac:anchor), ' ', '-')"/>
-  </xsl:template>
-
-  <xsl:template match="ac:link[ri:page]" mode="link-target">
-    <xsl:apply-templates mode="link-target"/>
+    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="ri:page[@ri:content-title]" mode="link-target">
@@ -232,8 +231,6 @@
       <xsl:text>|</xsl:text>
     </xsl:if>
   </xsl:template>
-
-<ac:image><ri:attachment ri:filename="type-hierarchy.gif" /></ac:image>
 
   <xsl:template match="ac:image">
     <xsl:text>![]</xsl:text>

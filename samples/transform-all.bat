@@ -1,0 +1,1 @@
+for /R %%f in (*.xml) do call ../bin/saxon.bat %%f

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE ac:confluence SYSTEM "confluence-all.dtd" [
+<!DOCTYPE ac:confluence SYSTEM "../dtd/confluence-all.dtd" [
 <!ENTITY clubs    "&#9827;\">
 <!ENTITY nbsp   "&#160;\">
 <!ENTITY ndash   "&#8211;\">

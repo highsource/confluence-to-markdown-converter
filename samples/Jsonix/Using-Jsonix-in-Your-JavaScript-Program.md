@@ -1,8 +1,8 @@
 # Using Jsonix in your JavaScript program
 
-* [[Download|Downloads]] Jsonix or [install](https://npmjs.org/package/xmldom) it with npm in node.js
+* [Download](Downloads.md) Jsonix or [install](https://npmjs.org/package/xmldom) it with npm in node.js
 * Add/import/include/require Jsonix scripts into your program/page.
-* [[Write|Mapping XML to JavaScript Objects]] or [[generate|Generating mappings from XML Schema]] Jsonix mappings.
+* [Write](Mapping XML to JavaScript Objects.md) or [generate](Generating mappings from XML Schema.md) Jsonix mappings.
 * Create Jsonix context from these mappings.
   * To marshal (serialize JavaScript objects as XML):
     * Create marshaller.

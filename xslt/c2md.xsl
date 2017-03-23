@@ -8,7 +8,7 @@
 
   <xsl:output method="text"/>
 
-  <!--xsl:strip-space elements="acxhtml:div acxhtml:table acxhtml:tbody acxhtml:tr acxhtml:ol acxhtml:ul ac:* ri:*"/-->
+  <xsl:strip-space elements="acxhtml:div acxhtml:table acxhtml:tbody acxhtml:tr acxhtml:ol acxhtml:ul ac:* ri:*"/>
 
   <xsl:template match="@*|node()" priority="-1">
     <xsl:copy>
@@ -28,67 +28,79 @@
 
 
   <xsl:template match="acxhtml:h1">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text># </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h2">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>## </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h3">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h4">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>#### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h5">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>##### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h6">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>###### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="acxhtml:ul">
+  <xsl:template match="acxhtml:ul|acxhtml:ol">
+    <xsl:if test="not(ancestor::acxhtml:ul or ancestor::acxhtml:ol)">
+      <xsl:text>&#xa;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>&#xA;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:ul/acxhtml:li">
+    <xsl:text>&#xa;</xsl:text>
     <xsl:for-each select="../ancestor::*[local-name(.)='ol' or local-name(.)='ul']">
       <xsl:text>  </xsl:text>
     </xsl:for-each>
     <xsl:text>* </xsl:text>
     <xsl:apply-templates/>
+  </xsl:template>
+  
+  <xsl:template match="acxhtml:ol/acxhtml:li">
     <xsl:text>&#xa;</xsl:text>
+    <xsl:for-each select="../ancestor::*[local-name(.)='ol' or local-name(.)='ul']">
+      <xsl:text>  </xsl:text>
+    </xsl:for-each>
+    <xsl:value-of select="count(./preceding-sibling::*)+1"/>
+    <xsl:text>. </xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:p">
-    <xsl:apply-templates/>
     <xsl:if test="not(ancestor::acxhtml:td or ancestor::acxhtml:th)">
       <xsl:text>&#xa;</xsl:text>
       <xsl:text>&#xa;</xsl:text>
     </xsl:if>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:a">
@@ -132,6 +144,8 @@
 
 
   <xsl:template match="ac:structured-macro[@ac:name='code']">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>```</xsl:text>
     <xsl:variable name="contents">
       <xsl:apply-templates/>
@@ -144,8 +158,6 @@
       <xsl:text>&#xa;</xsl:text>
     </xsl:if>
     <xsl:text>```</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="ac:structured-macro/ac:parameter"/>
@@ -186,20 +198,20 @@
   </xsl:template>
 
   <xsl:template match="acxhtml:table">
-    <xsl:apply-templates/>
     <xsl:text>&#xa;</xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:tr[acxhtml:th]">
+    <xsl:text>&#xa;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>&#xa;</xsl:text>
     <xsl:apply-templates mode="header-dashes"/>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:tr[acxhtml:td]">
-    <xsl:apply-templates/>
     <xsl:text>&#xa;</xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:th">

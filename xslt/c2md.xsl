@@ -151,17 +151,18 @@
   <xsl:template match="ac:structured-macro/ac:parameter"/>
 
   <xsl:template match="ac:link[ri:*]">
-    <xsl:text>[[</xsl:text>
+    <xsl:text>[</xsl:text>
     <xsl:if test="ac:link-body or ac:plain-text-link-body">
       <xsl:apply-templates select="ac:link-body | ac:plain-text-link-body"/>
-      <xsl:text>|</xsl:text>
     </xsl:if>
+    <xsl:text>]</xsl:text>
+    <xsl:text>(</xsl:text>
     <xsl:apply-templates select="ri:*" mode="link-target"/>
     <xsl:if test="@ac:anchor">
       <xsl:text>#</xsl:text>
       <xsl:value-of select="translate(lower-case(@ac:anchor), ' ', '-')"/>
     </xsl:if>
-    <xsl:text>]]</xsl:text>
+    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="ac:link[not(ri:*) and @ac:anchor]">
@@ -182,7 +183,7 @@
   </xsl:template>
 
   <xsl:template match="ri:page[@ri:content-title]" mode="link-target">
-    <xsl:value-of select="@ri:content-title"/>
+    <xsl:value-of select="concat(@ri:content-title, '.md')"/>
   </xsl:template>
 
   <xsl:template match="acxhtml:table">

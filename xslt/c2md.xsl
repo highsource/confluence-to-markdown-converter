@@ -127,9 +127,9 @@
   </xsl:template>
 
   <xsl:template match="acxhtml:em">
-    <xsl:text>*</xsl:text>
+    <xsl:text>_</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>*</xsl:text>
+    <xsl:text>_</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:code">

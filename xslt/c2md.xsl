@@ -84,7 +84,7 @@
     <xsl:text>* </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
-  
+
   <xsl:template match="acxhtml:ol/acxhtml:li">
     <xsl:text>&#xa;</xsl:text>
     <xsl:for-each select="../ancestor::*[local-name(.)='ol' or local-name(.)='ul']">
@@ -143,7 +143,7 @@
   </xsl:template>
 
 
-  <xsl:template match="ac:structured-macro[@ac:name='code']">
+  <xsl:template match="ac:structured-macro[@ac:name='code' or @ac:name='noformat']">
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>```</xsl:text>

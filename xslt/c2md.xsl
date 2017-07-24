@@ -275,4 +275,8 @@
     <xsl:text>-</xsl:text>
   </xsl:template>
 
+  <xsl:template match="ac:structured-macro[@ac:name='toc']">
+    <xsl:text>[TOC]</xsl:text>
+  </xsl:template>
+
 </xsl:stylesheet>

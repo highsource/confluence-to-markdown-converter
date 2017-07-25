@@ -219,8 +219,9 @@
   </xsl:template>
 
   <xsl:template match="acxhtml:th">
-    <xsl:text>|</xsl:text>
+    <xsl:text>| </xsl:text>
     <xsl:apply-templates/>
+    <xsl:text> </xsl:text>
     <xsl:if test="not(following-sibling::acxhtml:th)">
       <xsl:text>|</xsl:text>
     </xsl:if>
@@ -231,7 +232,7 @@
     <xsl:variable name="text">
       <xsl:apply-templates/>
     </xsl:variable>
-    <xsl:for-each select="1 to string-length($text)">
+    <xsl:for-each select="1 to string-length($text)+2">
       <xsl:text>-</xsl:text>
     </xsl:for-each>
     <xsl:if test="not(following-sibling::acxhtml:th)">
@@ -241,8 +242,9 @@
 
 
   <xsl:template match="acxhtml:td">
-    <xsl:text>|</xsl:text>
+    <xsl:text>| </xsl:text>
     <xsl:apply-templates/>
+    <xsl:text> </xsl:text>
     <xsl:if test="not(following-sibling::acxhtml:td)">
       <xsl:text>|</xsl:text>
     </xsl:if>

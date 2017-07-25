@@ -256,6 +256,12 @@
     <xsl:value-of select="@ri:filename"/>
   </xsl:template>
 
+  <xsl:template match="acxhtml:hr">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>----</xsl:text>
+  </xsl:template>
+
   <xsl:template match="ac:emoticon[@ac:name='plus']">
     <xsl:text>+</xsl:text>
   </xsl:template>

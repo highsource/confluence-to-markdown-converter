@@ -17,12 +17,15 @@
   </xsl:template>
 
   <xsl:template match="text()">
-    <!--xsl:value-of select="normalize-space(.)"/-->
-    <!--xsl:text>[</xsl:text-->
-    <!--xsl:value-of select="."/-->
-    <!--xsl:text>]</xsl:text-->
     <xsl:if test="normalize-space(.) != ''">
-      <xsl:value-of select="."/>
+      <xsl:choose>
+        <xsl:when test="preceding-sibling::*[1][self::acxhtml:br]">
+          <xsl:value-of select="replace(., '^\s+', '')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
   </xsl:template>
 

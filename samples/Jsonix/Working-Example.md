@@ -300,5 +300,5 @@ java
   purchaseorder.xsd // Schema
 ```
 
-You can [[download|Downloads]] the complete example.
+You can [download](Downloads.md) the complete example.
 

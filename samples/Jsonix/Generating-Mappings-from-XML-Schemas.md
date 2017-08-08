@@ -14,7 +14,7 @@ java
 
 ## XJC plugin
 
-If you're already using XJC to compile your schemas, you'll just need to use the `jsonix` plugin for XJC. The plugin can be downloaded [[here|Downloads]]. It is activated using the following command-line option:
+If you're already using XJC to compile your schemas, you'll just need to use the `jsonix` plugin for XJC. The plugin can be downloaded [here](Downloads.md). It is activated using the following command-line option:
 
 ```
 -Xjsonix

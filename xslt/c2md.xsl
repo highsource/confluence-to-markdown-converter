@@ -8,7 +8,7 @@
 
   <xsl:output method="text"/>
 
-  <!--xsl:strip-space elements="acxhtml:div acxhtml:table acxhtml:tbody acxhtml:tr acxhtml:ol acxhtml:ul ac:* ri:*"/-->
+  <xsl:strip-space elements="acxhtml:div acxhtml:table acxhtml:tbody acxhtml:tr acxhtml:ol acxhtml:ul ac:* ri:*"/>
 
   <xsl:template match="@*|node()" priority="-1">
     <xsl:copy>
@@ -17,78 +17,93 @@
   </xsl:template>
 
   <xsl:template match="text()">
-    <!--xsl:value-of select="normalize-space(.)"/-->
-    <!--xsl:text>[</xsl:text-->
-    <!--xsl:value-of select="."/-->
-    <!--xsl:text>]</xsl:text-->
     <xsl:if test="normalize-space(.) != ''">
-      <xsl:value-of select="."/>
+      <xsl:choose>
+        <xsl:when test="preceding-sibling::*[1][self::acxhtml:br]">
+          <xsl:value-of select="replace(., '^\s+', '')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
   </xsl:template>
 
 
   <xsl:template match="acxhtml:h1">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text># </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h2">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>## </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h3">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h4">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>#### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h5">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>##### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:h6">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>###### </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="acxhtml:ul">
+  <xsl:template match="acxhtml:ul|acxhtml:ol">
+    <xsl:if test="not(ancestor::acxhtml:ul or ancestor::acxhtml:ol)">
+      <xsl:text>&#xa;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>&#xA;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:ul/acxhtml:li">
+    <xsl:text>&#xa;</xsl:text>
     <xsl:for-each select="../ancestor::*[local-name(.)='ol' or local-name(.)='ul']">
       <xsl:text>  </xsl:text>
     </xsl:for-each>
     <xsl:text>* </xsl:text>
     <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="acxhtml:ol/acxhtml:li">
     <xsl:text>&#xa;</xsl:text>
+    <xsl:for-each select="../ancestor::*[local-name(.)='ol' or local-name(.)='ul']">
+      <xsl:text>  </xsl:text>
+    </xsl:for-each>
+    <xsl:value-of select="count(./preceding-sibling::*)+1"/>
+    <xsl:text>. </xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:p">
-    <xsl:apply-templates/>
     <xsl:if test="not(ancestor::acxhtml:td or ancestor::acxhtml:th)">
       <xsl:text>&#xa;</xsl:text>
       <xsl:text>&#xa;</xsl:text>
     </xsl:if>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:a">
@@ -115,9 +130,9 @@
   </xsl:template>
 
   <xsl:template match="acxhtml:em">
-    <xsl:text>*</xsl:text>
+    <xsl:text>_</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>*</xsl:text>
+    <xsl:text>_</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:code">
@@ -131,7 +146,9 @@
   </xsl:template>
 
 
-  <xsl:template match="ac:structured-macro[@ac:name='code']">
+  <xsl:template match="ac:structured-macro[@ac:name='code' or @ac:name='noformat']">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>```</xsl:text>
     <xsl:variable name="contents">
       <xsl:apply-templates/>
@@ -144,24 +161,23 @@
       <xsl:text>&#xa;</xsl:text>
     </xsl:if>
     <xsl:text>```</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="ac:structured-macro/ac:parameter"/>
 
   <xsl:template match="ac:link[ri:*]">
-    <xsl:text>[[</xsl:text>
+    <xsl:text>[</xsl:text>
     <xsl:if test="ac:link-body or ac:plain-text-link-body">
       <xsl:apply-templates select="ac:link-body | ac:plain-text-link-body"/>
-      <xsl:text>|</xsl:text>
     </xsl:if>
+    <xsl:text>]</xsl:text>
+    <xsl:text>(</xsl:text>
     <xsl:apply-templates select="ri:*" mode="link-target"/>
     <xsl:if test="@ac:anchor">
       <xsl:text>#</xsl:text>
       <xsl:value-of select="translate(lower-case(@ac:anchor), ' ', '-')"/>
     </xsl:if>
-    <xsl:text>]]</xsl:text>
+    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="ac:link[not(ri:*) and @ac:anchor]">
@@ -182,29 +198,30 @@
   </xsl:template>
 
   <xsl:template match="ri:page[@ri:content-title]" mode="link-target">
-    <xsl:value-of select="@ri:content-title"/>
+    <xsl:value-of select="concat(@ri:content-title, '.md')"/>
   </xsl:template>
 
   <xsl:template match="acxhtml:table">
-    <xsl:apply-templates/>
     <xsl:text>&#xa;</xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:tr[acxhtml:th]">
+    <xsl:text>&#xa;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>&#xa;</xsl:text>
     <xsl:apply-templates mode="header-dashes"/>
-    <xsl:text>&#xa;</xsl:text>
   </xsl:template>
 
   <xsl:template match="acxhtml:tr[acxhtml:td]">
-    <xsl:apply-templates/>
     <xsl:text>&#xa;</xsl:text>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="acxhtml:th">
-    <xsl:text>|</xsl:text>
+    <xsl:text>| </xsl:text>
     <xsl:apply-templates/>
+    <xsl:text> </xsl:text>
     <xsl:if test="not(following-sibling::acxhtml:th)">
       <xsl:text>|</xsl:text>
     </xsl:if>
@@ -215,7 +232,7 @@
     <xsl:variable name="text">
       <xsl:apply-templates/>
     </xsl:variable>
-    <xsl:for-each select="1 to string-length($text)">
+    <xsl:for-each select="1 to string-length($text)+2">
       <xsl:text>-</xsl:text>
     </xsl:for-each>
     <xsl:if test="not(following-sibling::acxhtml:th)">
@@ -225,8 +242,9 @@
 
 
   <xsl:template match="acxhtml:td">
-    <xsl:text>|</xsl:text>
+    <xsl:text>| </xsl:text>
     <xsl:apply-templates/>
+    <xsl:text> </xsl:text>
     <xsl:if test="not(following-sibling::acxhtml:td)">
       <xsl:text>|</xsl:text>
     </xsl:if>
@@ -243,12 +261,22 @@
     <xsl:value-of select="@ri:filename"/>
   </xsl:template>
 
+  <xsl:template match="acxhtml:hr">
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>----</xsl:text>
+  </xsl:template>
+
   <xsl:template match="ac:emoticon[@ac:name='plus']">
     <xsl:text>+</xsl:text>
   </xsl:template>
 
   <xsl:template match="ac:emoticon[@ac:name='minus']">
     <xsl:text>-</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="ac:structured-macro[@ac:name='toc']">
+    <xsl:text>[TOC]</xsl:text>
   </xsl:template>
 
 </xsl:stylesheet>
